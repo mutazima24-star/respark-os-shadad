@@ -1,0 +1,1242 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Respark OS | اقتراح تطوير خدمة عملاء شداد</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0a0a0a;
+            --accent: #FF462E;
+            --accent-light: #FF6B55;
+            --gold: #D4AF37;
+            --dark: #090909;
+            --grey-dark: #1a1a1a;
+            --grey-mid: #2a2a2a;
+            --grey-light: #888888;
+            --white: #ffffff;
+            --bg-warm: #F5F4F3;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'IBM Plex Sans Arabic', 'IBM Plex Sans', sans-serif;
+            background: var(--dark);
+            color: var(--white);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--dark);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--grey-mid);
+            border-radius: 3px;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 1.2rem 3rem;
+            background: rgba(9, 9, 9, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: var(--white);
+            letter-spacing: -0.5px;
+        }
+
+        .nav-logo span {
+            color: var(--accent);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--grey-light);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--white);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 6rem 2rem 4rem;
+            position: relative;
+            background: radial-gradient(ellipse at 50% 0%, rgba(255, 70, 46, 0.08) 0%, transparent 60%),
+                        radial-gradient(ellipse at 80% 50%, rgba(212, 175, 55, 0.04) 0%, transparent 40%);
+        }
+
+        .hero-content {
+            max-width: 900px;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            padding: 0.4rem 1.2rem;
+            background: rgba(255, 70, 46, 0.1);
+            border: 1px solid rgba(255, 70, 46, 0.3);
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 2rem;
+            letter-spacing: 0.5px;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            letter-spacing: -1px;
+        }
+
+        .hero h1 .highlight {
+            color: var(--accent);
+            position: relative;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--grey-light);
+            max-width: 700px;
+            margin: 0 auto 2.5rem;
+            font-weight: 300;
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 4rem;
+            margin-top: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--white);
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--grey-light);
+            margin-top: 0.5rem;
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(10px); }
+        }
+
+        /* Section Styling */
+        section {
+            padding: 6rem 2rem;
+        }
+
+        .section-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            letter-spacing: -0.5px;
+        }
+
+        .section-subtitle {
+            font-size: 1.1rem;
+            color: var(--grey-light);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Problem Section */
+        .problem-section {
+            background: var(--grey-dark);
+        }
+
+        .problem-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .problem-card {
+            background: var(--dark);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s, border-color 0.3s;
+        }
+
+        .problem-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(255, 70, 46, 0.3);
+        }
+
+        .problem-card.critical {
+            border-right: 4px solid var(--danger);
+        }
+
+        .problem-card.warning {
+            border-right: 4px solid var(--warning);
+        }
+
+        .problem-card .icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .problem-card h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .problem-card p {
+            font-size: 0.9rem;
+            color: var(--grey-light);
+        }
+
+        .problem-card .metric {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--danger);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Case Study */
+        .case-study {
+            background: var(--dark);
+        }
+
+        .case-card {
+            background: linear-gradient(135deg, rgba(255, 70, 46, 0.05) 0%, rgba(212, 175, 55, 0.03) 100%);
+            border: 1px solid rgba(255, 70, 46, 0.2);
+            border-radius: 20px;
+            padding: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .case-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .case-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .case-status {
+            padding: 0.3rem 1rem;
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--danger);
+        }
+
+        .case-timeline {
+            position: relative;
+            padding-right: 2rem;
+        }
+
+        .case-timeline::before {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--danger), var(--warning), var(--success));
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 1.5rem;
+            padding: 1rem 1.5rem;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            right: -2.35rem;
+            top: 1.3rem;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--grey-mid);
+            border: 2px solid var(--dark);
+        }
+
+        .timeline-item.fail::before {
+            background: var(--danger);
+        }
+
+        .timeline-item.success::before {
+            background: var(--success);
+        }
+
+        .timeline-date {
+            font-size: 0.75rem;
+            color: var(--grey-light);
+            margin-bottom: 0.3rem;
+        }
+
+        .timeline-text {
+            font-size: 0.95rem;
+            color: var(--white);
+        }
+
+        .timeline-note {
+            font-size: 0.8rem;
+            color: var(--grey-light);
+            margin-top: 0.3rem;
+            font-style: italic;
+        }
+
+        /* Solution Section */
+        .solution-section {
+            background: var(--grey-dark);
+        }
+
+        .solution-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .solution-card {
+            background: var(--dark);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 2.5rem;
+            transition: all 0.3s;
+        }
+
+        .solution-card:hover {
+            border-color: rgba(255, 70, 46, 0.4);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .solution-number {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+
+        .solution-card h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+        }
+
+        .solution-card p {
+            font-size: 0.9rem;
+            color: var(--grey-light);
+            margin-bottom: 1.5rem;
+        }
+
+        .solution-features {
+            list-style: none;
+        }
+
+        .solution-features li {
+            font-size: 0.85rem;
+            color: var(--grey-light);
+            padding: 0.4rem 0;
+            padding-right: 1.5rem;
+            position: relative;
+        }
+
+        .solution-features li::before {
+            content: '✓';
+            position: absolute;
+            right: 0;
+            color: var(--success);
+            font-weight: 700;
+        }
+
+        /* Comparison Section */
+        .comparison-section {
+            background: var(--dark);
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 1.2rem 1.5rem;
+            text-align: right;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .comparison-table th {
+            background: var(--grey-dark);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .comparison-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .comparison-table tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .comparison-table .current {
+            color: var(--grey-light);
+        }
+
+        .comparison-table .proposed {
+            color: var(--success);
+            font-weight: 500;
+        }
+
+        .comparison-table .highlight-row {
+            background: rgba(255, 70, 46, 0.05);
+        }
+
+        /* Architecture Section */
+        .architecture-section {
+            background: var(--grey-dark);
+        }
+
+        .arch-diagram {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin: 3rem 0;
+        }
+
+        .arch-box {
+            background: var(--dark);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            min-width: 200px;
+            flex: 1;
+        }
+
+        .arch-box.highlight {
+            border-color: var(--accent);
+            background: rgba(255, 70, 46, 0.05);
+        }
+
+        .arch-box .icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .arch-box h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .arch-box p {
+            font-size: 0.8rem;
+            color: var(--grey-light);
+        }
+
+        .arch-arrow {
+            font-size: 1.5rem;
+            color: var(--accent);
+        }
+
+        /* Phases Section */
+        .phases-section {
+            background: var(--dark);
+        }
+
+        .phase-timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .phase-timeline::before {
+            content: '';
+            position: absolute;
+            right: 2rem;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(to bottom, var(--accent), var(--gold), var(--success));
+            border-radius: 3px;
+        }
+
+        .phase-item {
+            position: relative;
+            padding-right: 5rem;
+            margin-bottom: 3rem;
+        }
+
+        .phase-item::before {
+            content: '';
+            position: absolute;
+            right: 1.35rem;
+            top: 0.5rem;
+            width: 1.3rem;
+            height: 1.3rem;
+            border-radius: 50%;
+            background: var(--dark);
+            border: 3px solid var(--accent);
+        }
+
+        .phase-item:nth-child(2)::before { border-color: var(--gold); }
+        .phase-item:nth-child(3)::before { border-color: var(--success); }
+
+        .phase-badge {
+            display: inline-block;
+            padding: 0.2rem 0.8rem;
+            background: rgba(255, 70, 46, 0.1);
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 0.8rem;
+        }
+
+        .phase-item h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .phase-item p {
+            font-size: 0.9rem;
+            color: var(--grey-light);
+        }
+
+        .phase-deliverables {
+            margin-top: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .deliverable {
+            padding: 0.3rem 0.8rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            font-size: 0.75rem;
+            color: var(--grey-light);
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, rgba(255, 70, 46, 0.1) 0%, rgba(212, 175, 55, 0.05) 100%);
+            text-align: center;
+            border-top: 1px solid rgba(255, 70, 46, 0.2);
+            border-bottom: 1px solid rgba(255, 70, 46, 0.2);
+        }
+
+        .cta-section h2 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .cta-section p {
+            font-size: 1.1rem;
+            color: var(--grey-light);
+            max-width: 600px;
+            margin: 0 auto 2.5rem;
+        }
+
+        .cta-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-light);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 70, 46, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--white);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        /* Footer */
+        footer {
+            padding: 3rem 2rem;
+            text-align: center;
+            background: var(--dark);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .footer-brand {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-brand span {
+            color: var(--accent);
+        }
+
+        .footer-text {
+            font-size: 0.85rem;
+            color: var(--grey-light);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            nav {
+                padding: 1rem 1.5rem;
+            }
+            .nav-links {
+                display: none;
+            }
+            .hero {
+                padding-top: 5rem;
+            }
+            .hero-stats {
+                gap: 2rem;
+            }
+            .stat-number {
+                font-size: 2rem;
+            }
+            .case-card {
+                padding: 1.5rem;
+            }
+            .comparison-table {
+                font-size: 0.8rem;
+            }
+            .comparison-table th,
+            .comparison-table td {
+                padding: 0.8rem;
+            }
+        }
+
+        /* Animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s, transform 0.6s;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Dark/Light support for print */
+        @media print {
+            body {
+                background: white;
+                color: black;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-logo">Respark<span>OS</span></div>
+        <ul class="nav-links">
+            <li><a href="#analysis">التحليل</a></li>
+            <li><a href="#case-study">الحالة</a></li>
+            <li><a href="#solution">الحل</a></li>
+            <li><a href="#comparison">المقارنة</a></li>
+            <li><a href="#phases">المراحل</a></li>
+            <li><a href="#contact">تواصل</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content fade-in">
+            <div class="hero-badge">عرض تقديمي خاص — شداد</div>
+            <h1>
+                ودّع انتظار العملاء.<br>
+                مرحباً بـ <span class="highlight">Respark OS</span>
+            </h1>
+            <p>
+                نظام ذكي يُحوّل 80% من محادثات العملاء المهملة إلى ردود فورية — 
+                ويُحرّر فريقك ليُركّز على ما يُحقّق ولاء العملاء حقاً.
+            </p>
+            <div class="hero-stats">
+                <div class="stat">
+                    <div class="stat-number" style="color: var(--danger);">255</div>
+                    <div class="stat-label">محادثة مفتوحة</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number" style="color: var(--danger);">8 أيام</div>
+                    <div class="stat-label">أطول مدة انتظار</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number" style="color: var(--accent);">&lt; 30 ث</div>
+                    <div class="stat-label">الرد مع Respark OS</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number" style="color: var(--success);">-65%</div>
+                    <div class="stat-label">التكلفة الشهرية</div>
+                </div>
+            </div>
+        </div>
+        <div class="scroll-indicator">↓</div>
+    </section>
+
+    <!-- Problem Analysis Section -->
+    <section class="problem-section" id="analysis">
+        <div class="section-container">
+            <div class="section-header fade-in">
+                <div class="section-label">التحليل الميداني</div>
+                <h2 class="section-title">ما اكتشفناه في منصتكم</h2>
+                <p class="section-subtitle">تحليل شامل لمحادثات BusinessChat — الواقع الذي يجب تغييره</p>
+            </div>
+
+            <div class="problem-grid">
+                <div class="problem-card critical fade-in">
+                    <div class="metric">17</div>
+                    <h3>محادثات بدون موظف</h3>
+                    <p>17 عميل ينتظرون ولا أحد مسؤول عنهم — ضائعون بين الفرق</p>
+                </div>
+                <div class="problem-card critical fade-in">
+                    <div class="metric">90</div>
+                    <h3>محادثة/موظف — محمد جبري</h3>
+                    <p>مالك الأعمال يحمل 90 محادلة — مستحيل يُجيب عليها كلها</p>
+                </div>
+                <div class="problem-card warning fade-in">
+                    <div class="metric">400+</div>
+                    <h3>كلمة في رسالة البوت</h3>
+                    <p>رسالة الاستبدال أطول من مقال — يقرأها العميل أم يهرب؟</p>
+                </div>
+                <div class="problem-card critical fade-in">
+                    <div class="metric">0</div>
+                    <h3>تذاكي لـ Omar</h3>
+                    <p>عميل يشكو 8 أيام — لم يُفتح له تذكرة ولا مهمة متابعة</p>
+                </div>
+                <div class="problem-card warning fade-in">
+                    <div class="metric">93</div>
+                    <h3>محادلة "خاملة" مفتوحة</h3>
+                    <p>الرسائل الخاملة تحمل اسماً خاطئاً — كل واحدة منها تحتاج رداً</p>
+                </div>
+                <div class="problem-card warning fade-in">
+                    <div class="metric">46</div>
+                    <h3>محادلة في 4 أيام</h3>
+                    <p>"ماحد برد علينا يعني ؟؟؟" — Mahdi Eid ينتظر 4 أيام</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Case Study Section -->
+    <section class="case-study" id="case-study">
+        <div class="section-container">
+            <div class="section-header fade-in">
+                <div class="section-label">دراسة حالة</div>
+                <h2 class="section-title"> Omar — عميل lost 8 أيام</h2>
+                <p class="section-subtitle">لم يكن هذا العميل بحاجة لمعجزة — كان بحاجة لنظام</p>
+            </div>
+
+            <div class="case-card fade-in">
+                <div class="case-header">
+                    <h3 class="case-title">محادلة #516233080 — طلب استبدال مقاس</h3>
+                    <span class="case-status">🔴 بدون حل</span>
+                </div>
+
+                <div class="case-timeline">
+                    <div class="timeline-item fail">
+                        <div class="timeline-date">7 سبتمبر — 7:58 م</div>
+                        <div class="timeline-text">🤖 البوت يُرسل رسالة 400+ كلمة عن سياسة الاستبدال</div>
+                        <div class="timeline-note">طويلة، مُشتّتة، لا تحتوي على رابط مباشر</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-date">7 سبتمبر — 7:59 م</div>
+                        <div class="timeline-text">👤 عمر: "طيب أنا عندي قطعه وحده بس" + "و كيف ارفع الطلب؟"</div>
+                        <div class="timeline-note">سؤالان بسيطان يحتاجان إجابة فورية</div>
+                    </div>
+                    <div class="timeline-item fail">
+                        <div class="timeline-date">7 سبتمبر — 8:01 م</div>
+                        <div class="timeline-text">👨‍💼 الموظف (م ا): "بتاكد من الاداره وبرد لك" — مرتين</div>
+                        <div class="timeline-note">وعد لم يتحقق. لا متابعة. لا تذكرة.</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-date">9 سبتمبر</div>
+                        <div class="timeline-text">🤖 النظام يُحوّل المحادلة لـ "الرسائل الخاملة"</div>
+                        <div class="timeline-note">بدل الحل — أرشفوها</div>
+                    </div>
+                    <div class="timeline-item fail">
+                        <div class="timeline-date">11-14 سبتمبر</div>
+                        <div class="timeline-text">👤 عمر: 4 رسائل "سلام عليكم" + "ماوصلني رد" + "ياجماعه ماوصلني رد"</div>
+                        <div class="timeline-note">صرخة ا�تغاثة واضحة — لا أحد يسمع</div>
+                    </div>
+                    <div class="timeline-item fail">
+                        <div class="timeline-date">15 سبتمبر (اليوم)</div>
+                        <div class="timeline-text">👤 عمر: "؟؟"</div>
+                        <div class="timeline-note">استسلم. لكن العميل لم ينسَ.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="fade-in" style="text-align: center; margin-top: 2rem;">
+                <p style="color: var(--grey-light); font-size: 1rem;">
+                    كيف كان <span style="color: var(--accent); font-weight: 600;">Respark OS</span> يُغيّر هذا؟
+                </p>
+            </div>
+
+            <div class="case-card fade-in" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(255, 70, 46, 0.03) 100%); border-color: rgba(16, 185, 129, 0.3);">
+                <div class="case-header">
+                    <h3 class="case-title">✅ السيناريو مع Respark OS</h3>
+                    <span class="case-status" style="background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.3); color: var(--success);">تم الحل</span>
+                </div>
+                <div class="case-timeline">
+                    <div class="timeline-item success">
+                        <div class="timeline-date">7 سبتمبر — 7:59 م</div>
+                        <div class="timeline-text">🤖 النظام يفهم: "استبدال مقاس" + "قطعة واحدة"</div>
+                        <div class="timeline-note">تصنيف فوري: استبدال → فردي → مباشر</div>
+                    </div>
+                    <div class="timeline-item success">
+                        <div class="timeline-date">7 سبتمبر — 7:59 م</div>
+                        <div class="timeline-text">💬 الرد الفوري (5 ثوانٍ): "تمام! تعبئ النموذج خلال 30 يوم، أول استبدال مجاني. [رابط النموذج]"</div>
+                        <div class="timeline-note">قصير، عملي، فيه الحل</div>
+                    </div>
+                    <div class="timeline-item success">
+                        <div class="timeline-date">7 سبتمبر — 8:05 م</div>
+                        <div class="timeline-text">✅ تذكرة أُنشئت تلقائياً + إشعار للموظب: "تم الحل — تأكيد العميل مطلوب"</div>
+                        <div class="timeline-note">النظام يتابع تلقائياً</div>
+                    </div>
+                    <div class="timeline-item success">
+                        <div class="timeline-date">8 سبتمبر</div>
+                        <div class="timeline-text">🤖 متابعة آلية: "هل استلمت الطلب الجديد؟" + "كيف جودة المنتج؟"</div>
+                        <div class="timeline-note">العميل يشعر بالاهتمام — قبل أن يسأل</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Solution Section -->
+    <section class="solution-section" id="solution">
+        <div class="section-container">
+            <div class="section-header fade-in">
+                <div class="section-label">Respark OS</div>
+                <h2 class="section-title">الحل — نظام ذكي متكامل</h2>
+                <p class="section-subtitle">لا نستبدل البشر — نستبدل العبء. إليكم كيف</p>
+            </div>
+
+            <div class="solution-grid">
+                <div class="solution-card fade-in">
+                    <div class="solution-number">01</div>
+                    <h3>🤖 بوت محادثة ذكي</h3>
+                    <p>يفهم نية العميل ويرد فوراً بحل عملي — لا 400 كلمة إنشائية</p>
+                    <ul class="solution-features">
+                        <li>تصنيف تلقائي: استفسار / شكوى / استبدال / تتبع</li>
+                        <li>رد فوري خلال 5 ثوانٍ</li>
+                        <li>أزرار تفاعلية بدل النصوص الطويلة</li>
+                        <li>تخصيص حسب حالة الطلب والعميل</li>
+                    </ul>
+                </div>
+                <div class="solution-card fade-in">
+                    <div class="solution-number">02</div>
+                    <h3>🎫 نظام تذاكي وتصعيد آلي</h3>
+                    <p>كل محادلة تتحول لتذكرة — لا وعد يُنسى، لا عميل يُهمل</p>
+                    <ul class="solution-features">
+                        <li>إنشاء تذكرة تلقائي لكل محادلة</li>
+                        <li>تصعيد للمدير بعد 24 ساعة بدون رد</li>
+                        <li>تنبيهات فورية عبر Telegram/WhatsApp</li>
+                        <li>تتبع حالة كل تذكرة حتى الإغلاق</li>
+                    </ul>
+                </div>
+                <div class="solution-card fade-in">
+                    <div class="solution-number">03</div>
+                    <h3>⚖️ توزيع حمل ذكي</h3>
+                    <p>محادثات موزعة بعدالة — لا موظف ينهار ولا عميل يضيع</p>
+                    <ul class="solution-features">
+                        <li>حد أقصى 40 محادلة/موظف</li>
+                        <li>تحويل آلي عند تجاوز الحد</li>
+                        <li>أولوية حسب حدة المشكلة</li>
+                        <li>توازن حقيقي في الفريق</li>
+                    </ul>
+                </div>
+                <div class="solution-card fade-in">
+                    <div class="solution-number">04</div>
+                    <h3>📊 لوحة تحليلات تنفيذية</h3>
+                    <p>أرقام حية: من يحتاج دعم؟ أين الخقل؟ ما رضا العملاء؟</p>
+                    <ul class="solution-features">
+                        <li>متوسط وقت الرد لكل موظف</li>
+                        <li>أكثر المشاكل تكراراً</li>
+                        <li>تنبيهات استباقية عند تدهور الأداء</li>
+                        <li>تقارير أسبوعية آلية للإدارة</li>
+                    </ul>
+                </div>
+                <div class="solution-card fade-in">
+                    <div class="solution-number">05</div>
+                    <h3>🔄 تحسين مستمر آلي</h3>
+                    <p>النظام يتعلم من تدخلات الموظفين — أفضل كل شهر</p>
+                    <ul class="solution-features">
+                        <li>يتعرف على أنواع جديدة من المحادثات</li>
+                        <li>يقلل الحاجة للموظفين تدريجياً</li>
+                        <li>يحسّن ردود البوت بناءً على البيانات</li>
+                        <li>تعلم آلي حقيقي</li>
+                    </ul>
+                </div>
+                <div class="solution-card fade-in">
+                    <div class="solution-number">06</div>
+                    <h3>🔗 تكامل سلس</h3>
+                    <p>يعمل مع BusinessChat — لا حاجة لتغيير أدواتكم الحالية</p>
+                    <ul class="solution-features">
+                        <li>API متوافق بالكامل</li>
+                        <li>لا تعطيل للخدمة الحالية</li>
+                        <li>تدريج آمن</li>
+                        <li>دعم فني متواصل</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Architecture Section -->
+    <section class="architecture-section">
+        <div class="section-container">
+            <div class="section-header fade-in">
+                <div class="section-label">المعمارية</div>
+                <h2 class="section-title">كيف يعمل النظام؟</h2>
+                <p class="section-subtitle">الخوارزمية الذكية خلف التجربة</p>
+            </div>
+
+            <div class="arch-diagram fade-in">
+                <div class="arch-box">
+                    <div class="icon">💬</div>
+                    <h4>العميل يُرسل</h4>
+                    <p>عبر WhatsApp</p>
+                </div>
+                <div class="arch-arrow">←</div>
+                <div class="arch-box highlight">
+                    <div class="icon">🧠</div>
+                    <h4>Respark OS</h4>
+                    <p>فهم + تصنيف + توزيع</p>
+                </div>
+                <div class="arch-arrow">←</div>
+                <div class="arch-box">
+                    <div class="icon">✅</div>
+                    <h4>80%: حل فوري</h4>
+                    <p>رد آلي + متابعة</p>
+                </div>
+            </div>
+
+            <div class="arch-diagram fade-in" style="margin-top: 1rem;">
+                <div class="arch-box">
+                    <div class="icon">⚠️</div>
+                    <h4>20%: معقد</h4>
+                    <p>تصعيد للموظف</p>
+                </div>
+                <div class="arch-arrow">←</div>
+                <div class="arch-box">
+                    <div class="icon">🎫</div>
+                    <h4>تذكرة + ملخص</h4>
+                    <p>من النظام</p>
+                </div>
+                <div class="arch-arrow">←</div>
+                <div class="arch-box">
+                    <div class="icon">👨‍💼</div>
+                    <h4>موظف متخصص</h4>
+                    <p>1-2 فقط</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Comparison Section -->
+    <section class="comparison-section" id="comparison">
+        <div class="section-container">
+            <div class="section-header fade-in">
+                <div class="section-label">المقارنة</div>
+                <h2 class="section-title">الوضع الحالي vs. مع Respark OS</h2>
+                <p class="section-subtitle">الفرق واضح — والنتيجة لا تقبل المقارنة</p>
+            </div>
+
+            <div style="overflow-x: auto;">
+                <table class="comparison-table fade-in">
+                    <thead>
+                        <tr>
+                            <th>البعد</th>
+                            <th>الوضع الحالي</th>
+                            <th>مع Respark OS</th>
+                            <th>الفرق</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>عدد الموظفين النشطين</strong></td>
+                            <td class="current">6-8 موظفين</td>
+                            <td class="proposed">2-3 موظفين فقط</td>
+                            <td class="proposed">-60%</td>
+                        </tr>
+                        <tr class="highlight-row">
+                            <td><strong>متوسط وقت الرد</strong></td>
+                            <td class="current">12-48 ساعة</td>
+                            <td class="proposed">&lt; 30 ثانية (80% الأولى)</td>
+                            <td class="proposed">أسرع 480x</td>
+                        </tr>
+                        <tr>
+                            <td><strong>المحادثات المهملة</strong></td>
+                            <td class="current">17+ بدون موظف</td>
+                            <td class="proposed">0 (توزيع آلي)</td>
+                            <td class="proposed">لا محادلة ضائعة</td>
+                        </tr>
+                        <tr>
+                            <td><strong>أطول مدة انتظار</strong></td>
+                            <td class="current">8 أيام</td>
+                            <td class="proposed">&lt; 4 ساعات</td>
+                            <td class="proposed">أفضل 48x</td>
+                        </tr>
+                        <tr class="highlight-row">
+                            <td><strong>التكلفة الشهرية التقريبية</strong></td>
+                            <td class="current">25,000 - 35,000 ر.س</td>
+                            <td class="proposed">8,000 - 12,000 ر.س</td>
+                            <td class="proposed" style="color: var(--success);">-65%</td>
+                        </tr>
+                        <tr>
+                            <td><strong>نظام متابعة (Tickets)</strong></td>
+                            <td class="current">غير فعّال</td>
+                            <td class="proposed">تذاكي + تصعيد آلي</td>
+                            <td class="proposed">تتبع كامل</td>
+                        </tr>
+                        <tr>
+                            <td><strong>رسائل البوت</strong></td>
+                            <td class="current">400+ كلمة إنشائية</td>
+                            <td class="proposed">موجزة + أزرار + روابط</td>
+                            <td class="proposed">تجربة أفضل</td>
+                        </tr>
+                        <tr>
+                            <td><strong>قابلية التوسع</strong></td>
+                            <td class="current">خطية (موظف/40 محادثة)</td>
+                            <td class="proposed">أُسية (آلاف/الثانية)</td>
+                            <td class="proposed">لا حدود</td>
+                        </tr>
+                        <tr class="highlight-row">
+                            <td><strong>رضا العملاء</strong></td>
+                            <td class="current">متدني (شكاوى صريحة)</td>
+                            <td class="proposed">مرتفع (حل فوري)</td>
+                            <td class="proposed" style="color: var(--success);">تحوّل جذري</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Phases Section -->
+    <section class="phases-section" id="phases">
+        <div class="section-container">
+            <div class="section-header fade-in">
+                <div class="section-label">خطة التنفيذ</div>
+                <h2 class="section-title">من الفكرة إلى الواقع</h2>
+                <p class="section-subtitle">3 مراحل واضحة — نتائج مبكّرة من الأسبوع الأول</p>
+            </div>
+
+            <div class="phase-timeline">
+                <div class="phase-item fade-in">
+                    <span class="phase-badge">المرحلة 1 — أسبوع واحد</span>
+                    <h3>🛠 إصلاح عاجل</h3>
+                    <p>نتائج فورية بدون انتظار — نُعالج المشاكل الحرجة الآن</p>
+                    <div class="phase-deliverables">
+                        <span class="deliverable">إعادة صياغة رسائل البوت (الاستبدال، التتبع، الشكاوى)</span>
+                        <span class="deliverable">نظام تنبيهات للمحادثات &gt; 24 ساعة</span>
+                        <span class="deliverable">توزيع الحمل بشكل عادل فوراً</span>
+                        <span class="deliverable">إعداد SLA واضح (الرد خلال 4 ساعات)</span>
+                    </div>
+                </div>
+
+                <div class="phase-item fade-in">
+                    <span class="phase-badge" style="background: rgba(212, 175, 55, 0.1); color: var(--gold);">المرحلة 2 — 2-3 أسابيع</span>
+                    <h3>🤖 أتمتة ذكية</h3>
+                    <p>النظام يبدأ يتعلم ويحل — تدخل الموظف يقل تدريجياً</p>
+                    <div class="phase-deliverables">
+                        <span class="deliverable">بوت محادلة ذكي مع تصنيف تلقائي</span>
+                        <span class="deliverable">نظام تذاكي وتصعيد آلي</span>
+                        <span class="deliverable">لوحة تحليلات تنفيذية حية</span>
+                        <span class="deliverable">تكامل Telegram/WhatsApp للتنبيهات</span>
+                    </div>
+                </div>
+
+                <div class="phase-item fade-in">
+                    <span class="phase-badge" style="background: rgba(16, 185, 129, 0.1); color: var(--success);">المرحلة 3 — شهري</span>
+                    <h3>📈 تحسين مستمر</h3>
+                    <p>النظام يتعلم كل شهر — والأداء يتحسن باستمرار</p>
+                    <div class="phase-deliverables">
+                        <span class="deliverable">تحليل أداء شهري مفصّل</span>
+                        <span class="deliverable">تحسين البوت بناءً على البيانات</span>
+                        <span class="deliverable">تقارير رضا العملاء</span>
+                        <span class="deliverable">تدريب الفريق على الأدوات</span>
+                        <span class="deliverable">توسع: Instagram / البريد / المكالمات</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section" id="contact">
+        <div class="section-container fade-in">
+            <h2>الخطوة التالية</h2>
+            <p>
+                اجتماع استكشافي مدته 30 دقيقة — نعرض لكم نموذجاً حياً لما يمكن أن تبدو عليه محادثاتكم بعد التحسين، ونُناقش الأولويات حسب احتياجكم الفعلي.
+            </p>
+            <div class="cta-buttons">
+                <a href="#" class="btn btn-primary">
+                    📅 احجز اجتماعك الآن
+                </a>
+                <a href="#" class="btn btn-secondary">
+                    💬 محادلة مباشرة
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-brand">Respark<span>OS</span></div>
+        <p class="footer-text">شريك شداد الرقمي نحو تجربة عملاء استثنائية</p>
+        <p class="footer-text" style="margin-top: 0.5rem; font-size: 0.75rem; opacity: 0.6;">
+            تم إعداد هذا العرض بناءً على تحليل ميداني لمحادثات BusinessChat — جميع البيانات حقيقية ومؤرخة
+        </p>
+    </footer>
+
+    <!-- Scroll Animation -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+        });
+    </script>
+</body>
+</html>
