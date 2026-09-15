@@ -1,1567 +1,994 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Respark OS | نظام خدمة العملاء الذكي — شداد</title>
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary: #090909;
-            --bg-dark: #090909;
-            --bg-card: #111111;
-            --bg-card-hover: #1a1a1a;
-            --accent: #FF462E;
-            --accent-glow: rgba(255, 70, 46, 0.4);
-            --gold: #D4AF37;
-            --gold-glow: rgba(212, 175, 55, 0.3);
-            --purple: #8B5CF6;
-            --blue: #3B82F6;
-            --green: #10B981;
-            --red: #EF4444;
-            --orange: #F97316;
-            --text: #ffffff;
-            --text-muted: #888888;
-            --border: rgba(255, 255, 255, 0.08);
-            --glass: rgba(255, 255, 255, 0.03);
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
-
-        body {
-            font-family: 'IBM Plex Sans Arabic', sans-serif;
-            background: var(--bg-dark);
-            color: var(--text);
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
-
-        /* Animated Background */
-        .bg-mesh {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            z-index: -1;
-            overflow: hidden;
-        }
-
-        .bg-mesh::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -20%;
-            width: 800px;
-            height: 800px;
-            background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
-            animation: floatMesh 20s ease-in-out infinite;
-        }
-
-        .bg-mesh::after {
-            content: '';
-            position: absolute;
-            bottom: -30%;
-            left: -20%;
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, var(--gold-glow) 0%, transparent 70%);
-            animation: floatMesh 25s ease-in-out infinite reverse;
-        }
-
-        @keyframes floatMesh {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            33% { transform: translate(50px, -30px) scale(1.1); }
-            66% { transform: translate(-30px, 50px) scale(0.9); }
-        }
-
-        /* Navigation */
-        nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-            padding: 1.5rem 3rem;
-            background: rgba(9, 9, 9, 0.7);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: all 0.3s;
-        }
-
-        nav.scrolled {
-            padding: 1rem 3rem;
-            background: rgba(9, 9, 9, 0.95);
-        }
-
-        .nav-logo {
-            font-weight: 700;
-            font-size: 1.4rem;
-            background: linear-gradient(135deg, var(--text) 0%, var(--accent) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 2.5rem;
-            list-style: none;
-        }
-
-        .nav-links a {
-            color: var(--text-muted);
-            text-decoration: none;
-            font-size: 0.85rem;
-            font-weight: 500;
-            transition: all 0.3s;
-            position: relative;
-        }
-
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            bottom: -4px;
-            right: 0;
-            width: 0;
-            height: 2px;
-            background: var(--accent);
-            transition: width 0.3s;
-        }
-
-        .nav-links a:hover { color: var(--text); }
-        .nav-links a:hover::after { width: 100%; }
-
-        /* Hero Section - Oberon Style */
-        .hero {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 8rem 2rem 4rem;
-            position: relative;
-        }
-
-        .hero-content {
-            max-width: 1000px;
-            position: relative;
-            z-index: 2;
-        }
-
-        .hero-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem 1.2rem;
-            background: linear-gradient(135deg, rgba(255, 70, 46, 0.15) 0%, rgba(212, 175, 55, 0.1) 100%);
-            border: 1px solid rgba(255, 70, 46, 0.3);
-            border-radius: 50px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: var(--accent);
-            margin-bottom: 2.5rem;
-            animation: fadeInUp 0.8s ease-out;
-        }
-
-        .hero-badge::before {
-            content: '';
-            width: 8px;
-            height: 8px;
-            background: var(--accent);
-            border-radius: 50%;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(1.5); }
-        }
-
-        .hero h1 {
-            font-size: clamp(3rem, 8vw, 6rem);
-            font-weight: 700;
-            line-height: 1.05;
-            margin-bottom: 1.5rem;
-            letter-spacing: -2px;
-            animation: fadeInUp 0.8s ease-out 0.2s both;
-        }
-
-        .hero h1 .line1 {
-            display: block;
-            background: linear-gradient(135deg, var(--text) 0%, #ccc 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .hero h1 .line2 {
-            display: block;
-            background: linear-gradient(135deg, var(--accent) 0%, var(--gold) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .hero p {
-            font-size: 1.25rem;
-            color: var(--text-muted);
-            max-width: 650px;
-            margin: 0 auto 3rem;
-            font-weight: 300;
-            animation: fadeInUp 0.8s ease-out 0.4s both;
-        }
-
-        .hero-stats {
-            display: flex;
-            justify-content: center;
-            gap: 3rem;
-            flex-wrap: wrap;
-            animation: fadeInUp 0.8s ease-out 0.6s both;
-        }
-
-        .stat-card {
-            background: var(--glass);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 1.5rem 2.5rem;
-            text-align: center;
-            backdrop-filter: blur(10px);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, var(--accent), var(--gold));
-            transform: scaleX(0);
-            transition: transform 0.4s;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-8px);
-            border-color: rgba(255, 70, 46, 0.3);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-        }
-
-        .stat-card:hover::before { transform: scaleX(1); }
-
-        .stat-number {
-            font-size: 3.5rem;
-            font-weight: 700;
-            line-height: 1;
-            margin-bottom: 0.3rem;
-        }
-
-        .stat-number.danger { color: var(--red); }
-        .stat-number.warning { color: var(--orange); }
-        .stat-number.accent { color: var(--accent); }
-        .stat-number.success { color: var(--green); }
-
-        .stat-label {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            font-weight: 500;
-        }
-
-        /* Floating Elements */
-        .floating-elements {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            pointer-events: none;
-            overflow: hidden;
-        }
-
-        .float-item {
-            position: absolute;
-            border-radius: 16px;
-            background: var(--glass);
-            border: 1px solid var(--border);
-            backdrop-filter: blur(10px);
-            animation: floatItem 8s ease-in-out infinite;
-        }
-
-        .float-item:nth-child(1) {
-            top: 15%;
-            right: 10%;
-            width: 80px;
-            height: 80px;
-            animation-delay: 0s;
-        }
-
-        .float-item:nth-child(2) {
-            top: 60%;
-            left: 8%;
-            width: 60px;
-            height: 60px;
-            animation-delay: -2s;
-        }
-
-        .float-item:nth-child(3) {
-            bottom: 20%;
-            right: 15%;
-            width: 100px;
-            height: 100px;
-            animation-delay: -4s;
-        }
-
-        .float-item:nth-child(4) {
-            top: 30%;
-            left: 15%;
-            width: 50px;
-            height: 50px;
-            animation-delay: -6s;
-        }
-
-        @keyframes floatItem {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(5deg); }
-        }
-
-        /* Diagonal Divider */
-        .diagonal-divider {
-            position: relative;
-            height: 150px;
-            overflow: hidden;
-        }
-
-        .diagonal-divider::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -10%;
-            right: -10%;
-            height: 200%;
-            background: var(--bg-card);
-            transform: rotate(-3deg);
-            transform-origin: top right;
-        }
-
-        /* Section Styling */
-        section {
-            padding: 6rem 2rem;
-            position: relative;
-        }
-
-        .section-container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .section-label {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.8rem;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            color: var(--accent);
-            margin-bottom: 1.5rem;
-        }
-
-        .section-label::before {
-            content: '';
-            width: 30px;
-            height: 2px;
-            background: var(--accent);
-        }
-
-        .section-title {
-            font-size: clamp(2rem, 5vw, 3.5rem);
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-            letter-spacing: -1px;
-            line-height: 1.2;
-        }
-
-        .section-subtitle {
-            font-size: 1.1rem;
-            color: var(--text-muted);
-            max-width: 600px;
-            font-weight: 300;
-        }
-
-        /* Problem Cards - Floating Style */
-        .problem-section {
-            background: var(--bg-card);
-        }
-
-        .problem-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 1.5rem;
-            margin-top: 3rem;
-        }
-
-        .problem-card {
-            background: linear-gradient(145deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
-            border: 1px solid var(--border);
-            border-radius: 24px;
-            padding: 2rem;
-            position: relative;
-            overflow: hidden;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .problem-card::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 100px;
-            height: 100px;
-            background: var(--accent-glow);
-            filter: blur(60px);
-            opacity: 0;
-            transition: opacity 0.4s;
-        }
-
-        .problem-card:hover {
-            transform: translateY(-10px) scale(1.02);
-            border-color: rgba(255, 70, 46, 0.4);
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
-        }
-
-        .problem-card:hover::after { opacity: 0.3; }
-
-        .problem-card.critical { border-right: 4px solid var(--red); }
-        .problem-card.warning { border-right: 4px solid var(--orange); }
-
-        .problem-metric {
-            font-size: 4rem;
-            font-weight: 700;
-            line-height: 1;
-            margin-bottom: 1rem;
-            background: linear-gradient(135deg, var(--red) 0%, var(--orange) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .problem-card h3 {
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-
-        .problem-card p {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            line-height: 1.6;
-        }
-
-        /* Case Study - Timeline Style */
-        .case-section {
-            background: var(--bg-dark);
-        }
-
-        .case-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4rem;
-            align-items: start;
-            margin-top: 3rem;
-        }
-
-        @media (max-width: 900px) {
-            .case-container { grid-template-columns: 1fr; gap: 2rem; }
-        }
-
-        .case-timeline {
-            position: relative;
-            padding-right: 3rem;
-        }
-
-        .case-timeline::before {
-            content: '';
-            position: absolute;
-            right: 0;
-            top: 0;
-            bottom: 0;
-            width: 3px;
-            background: linear-gradient(to bottom, var(--red), var(--orange), var(--gold), var(--green));
-            border-radius: 3px;
-        }
-
-        .timeline-item {
-            position: relative;
-            margin-bottom: 2rem;
-            padding: 1.5rem;
-            background: var(--glass);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            transition: all 0.3s;
-        }
-
-        .timeline-item:hover {
-            transform: translateX(-10px);
-            border-color: rgba(255, 70, 46, 0.3);
-        }
-
-        .timeline-item::before {
-            content: '';
-            position: absolute;
-            right: -2.5rem;
-            top: 1.8rem;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: var(--bg-dark);
-            border: 3px solid var(--red);
-        }
-
-        .timeline-item.success::before { border-color: var(--green); }
-        .timeline-item.warning::before { border-color: var(--orange); }
-
-        .timeline-date {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-        }
-
-        .timeline-content {
-            font-size: 0.95rem;
-            line-height: 1.5;
-        }
-
-        .timeline-note {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            margin-top: 0.5rem;
-            font-style: italic;
-        }
-
-        .case-label {
-            display: inline-block;
-            padding: 0.3rem 0.8rem;
-            border-radius: 8px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-        }
-
-        .case-label.fail {
-            background: rgba(239, 68, 68, 0.15);
-            color: var(--red);
-            border: 1px solid rgba(239, 68, 68, 0.3);
-        }
-
-        .case-label.success {
-            background: rgba(16, 185, 129, 0.15);
-            color: var(--green);
-            border: 1px solid rgba(16, 185, 129, 0.3);
-        }
-
-        /* Solution Cards - Bento Grid */
-        .solution-section {
-            background: var(--bg-card);
-        }
-
-        .bento-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            grid-template-rows: auto auto;
-            gap: 1.5rem;
-            margin-top: 3rem;
-        }
-
-        @media (max-width: 900px) {
-            .bento-grid { grid-template-columns: 1fr; }
-        }
-
-        .bento-card {
-            background: linear-gradient(145deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
-            border: 1px solid var(--border);
-            border-radius: 24px;
-            padding: 2rem;
-            position: relative;
-            overflow: hidden;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .bento-card:hover {
-            transform: translateY(-5px);
-            border-color: rgba(255, 70, 46, 0.3);
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
-        }
-
-        .bento-card.large {
-            grid-column: span 2;
-        }
-
-        .bento-card.tall {
-            grid-row: span 2;
-        }
-
-        @media (max-width: 900px) {
-            .bento-card.large,
-            .bento-card.tall {
-                grid-column: span 1;
-                grid-row: span 1;
-            }
-        }
-
-        .bento-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            margin-bottom: 1.5rem;
-            background: linear-gradient(135deg, var(--accent) 0%, var(--gold) 100%);
-        }
-
-        .bento-card h3 {
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin-bottom: 0.8rem;
-        }
-
-        .bento-card p {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            line-height: 1.6;
-        }
-
-        .bento-features {
-            list-style: none;
-            margin-top: 1.5rem;
-        }
-
-        .bento-features li {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            padding: 0.4rem 0;
-            padding-right: 1.5rem;
-            position: relative;
-        }
-
-        .bento-features li::before {
-            content: '→';
-            position: absolute;
-            right: 0;
-            color: var(--accent);
-            font-weight: 700;
-        }
-
-        /* Architecture Diagram - Animated */
-        .arch-section {
-            background: var(--bg-dark);
-        }
-
-        .arch-flow {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 1.5rem;
-            flex-wrap: wrap;
-            margin: 4rem 0;
-        }
-
-        .arch-node {
-            background: var(--glass);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 2rem;
-            text-align: center;
-            min-width: 180px;
-            position: relative;
-            transition: all 0.4s;
-        }
-
-        .arch-node:hover {
-            transform: scale(1.05);
-            border-color: var(--accent);
-        }
-
-        .arch-node.highlight {
-            background: linear-gradient(135deg, rgba(255, 70, 46, 0.1) 0%, rgba(212, 175, 55, 0.05) 100%);
-            border-color: var(--accent);
-        }
-
-        .arch-node .icon {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .arch-node h4 {
-            font-size: 0.95rem;
-            font-weight: 600;
-            margin-bottom: 0.3rem;
-        }
-
-        .arch-node p {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-        }
-
-        .arch-arrow {
-            font-size: 1.5rem;
-            color: var(--accent);
-            animation: arrowPulse 2s infinite;
-        }
-
-        @keyframes arrowPulse {
-            0%, 100% { opacity: 1; transform: translateX(0); }
-            50% { opacity: 0.5; transform: translateX(5px); }
-        }
-
-        /* Comparison Table - Modern */
-        .comparison-section {
-            background: var(--bg-card);
-        }
-
-        .comparison-grid {
-            display: grid;
-            grid-template-columns: 1fr auto 1fr;
-            gap: 2rem;
-            align-items: start;
-            margin-top: 3rem;
-        }
-
-        @media (max-width: 900px) {
-            .comparison-grid { grid-template-columns: 1fr; }
-        }
-
-        .comparison-col {
-            background: var(--glass);
-            border: 1px solid var(--border);
-            border-radius: 24px;
-            padding: 2rem;
-        }
-
-        .comparison-col.current {
-            border-color: rgba(239, 68, 68, 0.3);
-        }
-
-        .comparison-col.proposed {
-            border-color: rgba(16, 185, 129, 0.3);
-            background: linear-gradient(145deg, rgba(16, 185, 129, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
-        }
-
-        .comparison-header {
-            text-align: center;
-            margin-bottom: 2rem;
-            padding-bottom: 1.5rem;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .comparison-header h3 {
-            font-size: 1.3rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-
-        .comparison-header .badge {
-            display: inline-block;
-            padding: 0.3rem 0.8rem;
-            border-radius: 8px;
-            font-size: 0.7rem;
-            font-weight: 600;
-        }
-
-        .comparison-header .badge.fail {
-            background: rgba(239, 68, 68, 0.15);
-            color: var(--red);
-        }
-
-        .comparison-header .badge.success {
-            background: rgba(16, 185, 129, 0.15);
-            color: var(--green);
-        }
-
-        .comparison-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 0;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .comparison-row:last-child { border-bottom: none; }
-
-        .comparison-row .label {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-        }
-
-        .comparison-row .value {
-            font-size: 0.9rem;
-            font-weight: 600;
-        }
-
-        .comparison-row .value.danger { color: var(--red); }
-        .comparison-row .value.success { color: var(--green); }
-        .comparison-row .value.accent { color: var(--accent); }
-
-        .comparison-vs {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--text-muted);
-        }
-
-        @media (max-width: 900px) {
-            .comparison-vs { display: none; }
-        }
-
-        /* Phases - Horizontal Scroll */
-        .phases-section {
-            background: var(--bg-dark);
-            overflow: hidden;
-        }
-
-        .phases-track {
-            display: flex;
-            gap: 2rem;
-            margin-top: 3rem;
-            overflow-x: auto;
-            padding-bottom: 2rem;
-            scroll-snap-type: x mandatory;
-        }
-
-        .phases-track::-webkit-scrollbar {
-            height: 6px;
-        }
-
-        .phases-track::-webkit-scrollbar-track {
-            background: var(--border);
-            border-radius: 3px;
-        }
-
-        .phases-track::-webkit-scrollbar-thumb {
-            background: var(--accent);
-            border-radius: 3px;
-        }
-
-        .phase-card {
-            flex: 0 0 350px;
-            background: var(--glass);
-            border: 1px solid var(--border);
-            border-radius: 24px;
-            padding: 2rem;
-            scroll-snap-align: start;
-            transition: all 0.4s;
-        }
-
-        .phase-card:hover {
-            transform: translateY(-10px);
-            border-color: var(--accent);
-        }
-
-        .phase-number {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--accent) 0%, var(--gold) 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-        }
-
-        .phase-card h3 {
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin-bottom: 0.8rem;
-        }
-
-        .phase-card p {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            margin-bottom: 1.5rem;
-        }
-
-        .phase-deliverables {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-        }
-
-        .deliverable {
-            padding: 0.4rem 0.8rem;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 8px;
-            font-size: 0.7rem;
-            color: var(--text-muted);
-        }
-
-        /* CTA Section */
-        .cta-section {
-            background: linear-gradient(135deg, rgba(255, 70, 46, 0.1) 0%, rgba(212, 175, 55, 0.05) 100%);
-            text-align: center;
-            border-top: 1px solid rgba(255, 70, 46, 0.2);
-            border-bottom: 1px solid rgba(255, 70, 46, 0.2);
-        }
-
-        .cta-section h2 {
-            font-size: clamp(2rem, 5vw, 3.5rem);
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-        }
-
-        .cta-section p {
-            font-size: 1.1rem;
-            color: var(--text-muted);
-            max-width: 600px;
-            margin: 0 auto 3rem;
-        }
-
-        .cta-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 1.5rem;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 1rem 2.5rem;
-            border-radius: 14px;
-            font-size: 1rem;
-            font-weight: 600;
-            text-decoration: none;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            cursor: pointer;
-            border: none;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--accent) 0%, var(--gold) 100%);
-            color: var(--text);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 40px rgba(255, 70, 46, 0.4);
-        }
-
-        .btn-secondary {
-            background: transparent;
-            color: var(--text);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.05);
-            border-color: rgba(255, 255, 255, 0.4);
-        }
-
-        /* Footer */
-        footer {
-            padding: 3rem 2rem;
-            text-align: center;
-            background: var(--bg-dark);
-        }
-
-        .footer-brand {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            background: linear-gradient(135deg, var(--text) 0%, var(--accent) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .footer-text {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-        }
-
-        /* Animations */
-        .fade-in {
-            opacity: 0;
-            transform: translateY(40px);
-            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .fade-in.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .slide-in-right {
-            opacity: 0;
-            transform: translateX(60px);
-            transition: opacity 0.8s, transform 0.8s;
-        }
-
-        .slide-in-right.visible {
-            opacity: 1;
-            transform: translateX(0);
-        }
-
-        .slide-in-left {
-            opacity: 0;
-            transform: translateX(-60px);
-            transition: opacity 0.8s, transform 0.8s;
-        }
-
-        .slide-in-left.visible {
-            opacity: 1;
-            transform: translateX(0);
-        }
-
-        .scale-in {
-            opacity: 0;
-            transform: scale(0.9);
-            transition: opacity 0.8s, transform 0.8s;
-        }
-
-        .scale-in.visible {
-            opacity: 1;
-            transform: scale(1);
-        }
-
-        /* Counter Animation */
-        .counter {
-            display: inline-block;
-        }
-
-        /* Scroll Progress */
-        .scroll-progress {
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 3px;
-            background: linear-gradient(90deg, var(--accent), var(--gold));
-            z-index: 10000;
-            transition: width 0.1s;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            nav { padding: 1rem 1.5rem; }
-            .nav-links { display: none; }
-            .hero h1 { font-size: 2.5rem; }
-            .hero-stats { gap: 1.5rem; }
-            .stat-card { padding: 1rem 1.5rem; }
-            .stat-number { font-size: 2.5rem; }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="عرض Respark OS لشركة شداد: نظام تشغيل لخدمة العملاء مبني على تحليل BusinessChat، بتصميم مستوحى من لغة Oberon التشغيلية." />
+  <title>Respark OS × شداد | نظام تشغيل خدمة العملاء</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --paper: #efedeb;
+      --paper-2: #f7f5f2;
+      --paper-3: #e4e1dc;
+      --sand: #dcdbd5;
+      --line: rgba(26, 26, 26, 0.105);
+      --line-strong: rgba(26, 26, 26, 0.18);
+      --ink: #1a1a1a;
+      --ink-2: #2a2827;
+      --ink-muted: #706d68;
+      --white: #fffdf9;
+      --orange: #f05a18;
+      --orange-2: #ff6a22;
+      --red: #c93c24;
+      --green: #16785f;
+      --brown: #6d5446;
+      --panel-radius: 22px;
+      --small-radius: 10px;
+      --max: 1180px;
+      --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+      --arabic: "Tajawal", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: var(--arabic);
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 14% 8%, rgba(240, 90, 24, 0.09), transparent 28rem),
+        linear-gradient(90deg, transparent 0 calc(25% - 1px), var(--line) calc(25% - 1px) 25%, transparent 25% calc(50% - 1px), var(--line) calc(50% - 1px) 50%, transparent 50% calc(75% - 1px), var(--line) calc(75% - 1px) 75%, transparent 75%),
+        linear-gradient(0deg, transparent 0 calc(112px - 1px), rgba(26,26,26,.045) calc(112px - 1px) 112px),
+        var(--paper);
+      background-size: auto, 100% 100%, 100% 112px, auto;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: -1;
+      opacity: .55;
+      background-image:
+        radial-gradient(rgba(26,26,26,.18) .65px, transparent .65px),
+        radial-gradient(rgba(255,255,255,.55) .7px, transparent .7px);
+      background-position: 0 0, 6px 6px;
+      background-size: 12px 12px;
+      mix-blend-mode: multiply;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    .container { width: min(var(--max), calc(100vw - 36px)); margin-inline: auto; }
+    .mono { font-family: var(--mono); letter-spacing: .03em; }
+    .caps { font-family: var(--mono); text-transform: uppercase; letter-spacing: .16em; font-size: 11px; font-weight: 700; }
+    .orange { color: var(--orange); }
+    .muted { color: var(--ink-muted); }
+
+    .progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      width: 0;
+      background: var(--orange);
+      z-index: 80;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 16px;
+      z-index: 50;
+      margin-top: 16px;
+      pointer-events: none;
+    }
+
+    .nav-shell {
+      pointer-events: auto;
+      width: min(var(--max), calc(100vw - 36px));
+      margin-inline: auto;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 18px;
+      padding: 10px;
+      color: var(--white);
+      background: rgba(26, 26, 26, .94);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 999px;
+      box-shadow: 0 14px 40px rgba(26,26,26,.18);
+      backdrop-filter: blur(12px);
+    }
+
+    .brand {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      gap: 10px;
+      padding-inline: 12px;
+      direction: ltr;
+    }
+    .mark {
+      width: 27px;
+      height: 27px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: var(--orange);
+      color: var(--ink);
+      font: 900 13px var(--mono);
+    }
+    .brand strong { font: 700 13px var(--mono); letter-spacing: .08em; }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      direction: rtl;
+    }
+    .nav-links a {
+      color: rgba(255,253,249,.66);
+      padding: 9px 13px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 500;
+      transition: .25s ease;
+    }
+    .nav-links a:hover { color: var(--white); background: rgba(255,255,255,.08); }
+    .nav-cta { justify-self: end; background: var(--white); color: var(--ink); padding: 10px 17px; border-radius: 999px; font-weight: 800; font-size: 13px; }
+
+    .hero {
+      min-height: calc(100vh - 80px);
+      padding: 86px 0 56px;
+      display: grid;
+      align-items: center;
+      position: relative;
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.02fr) minmax(340px, .88fr);
+      gap: 28px;
+      align-items: stretch;
+    }
+    .hero-copy {
+      min-height: 640px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border-top: 1px solid var(--line-strong);
+      border-bottom: 1px solid var(--line-strong);
+      padding-block: 28px 24px;
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--ink-muted);
+    }
+    .eyebrow::before {
+      content: "";
+      width: 36px;
+      height: 1px;
+      background: var(--orange);
+      display: block;
+    }
+    h1 {
+      margin: 38px 0 22px;
+      font-size: clamp(46px, 8.4vw, 112px);
+      line-height: .89;
+      letter-spacing: -.065em;
+      font-weight: 800;
+      text-wrap: balance;
+      max-width: 850px;
+    }
+    h1 .cut { color: transparent; -webkit-text-stroke: 1.2px var(--ink); text-stroke: 1.2px var(--ink); }
+    .hero-lead {
+      max-width: 690px;
+      color: var(--ink-muted);
+      font-size: clamp(18px, 2vw, 24px);
+      line-height: 1.65;
+      font-weight: 400;
+      margin: 0;
+    }
+    .hero-bottom {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border: 1px solid var(--line-strong);
+      background: rgba(255,253,249,.38);
+      margin-top: 34px;
+    }
+    .hero-bottom .metric {
+      padding: 18px 16px;
+      border-left: 1px solid var(--line);
+    }
+    .hero-bottom .metric:first-child { border-left: 0; }
+    .metric .num { display: block; font: 700 clamp(28px, 3.5vw, 44px)/1 var(--mono); letter-spacing: -.08em; }
+    .metric .label { display: block; margin-top: 7px; color: var(--ink-muted); font-size: 13px; line-height: 1.4; }
+
+    .hero-board {
+      min-height: 640px;
+      position: relative;
+      display: grid;
+      grid-template-rows: 1fr auto;
+      gap: 16px;
+    }
+    .black-panel {
+      background: var(--ink);
+      color: var(--white);
+      border-radius: 24px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 34px 70px rgba(26,26,26,.26);
+      border: 1px solid rgba(255,255,255,.11);
+    }
+    .black-panel::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      opacity: .18;
+      background-image: radial-gradient(rgba(255,255,255,.82) .85px, transparent .85px);
+      background-size: 8px 8px;
+      mask-image: linear-gradient(to bottom, transparent, black 20%, black 70%, transparent);
+      pointer-events: none;
+    }
+    .panel-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 24px; border-bottom: 1px solid rgba(255,255,255,.1); position: relative; z-index: 1; }
+    .burger { display: grid; gap: 4px; width: 22px; }
+    .burger i { height: 1px; background: var(--white); opacity: .8; }
+    .panel-title { padding: 26px 24px 0; position: relative; z-index: 1; }
+    .panel-title h2 { margin: 0; font-size: clamp(33px, 4vw, 52px); line-height: .96; letter-spacing: -.055em; font-weight: 800; }
+    .panel-title p { margin: 16px 0 0; color: rgba(255,253,249,.62); font-size: 15px; line-height: 1.75; max-width: 430px; }
+    .queue-screen {
+      margin: 26px 18px 18px;
+      background: #f6f4f1;
+      color: var(--ink);
+      min-height: 260px;
+      border-radius: 2px 2px 16px 16px;
+      overflow: hidden;
+      position: relative;
+      z-index: 1;
+      border: 1px solid rgba(255,255,255,.16);
+    }
+    .queue-screen::after {
+      content: "";
+      position: absolute;
+      inset: auto -20% -36% -20%;
+      height: 155px;
+      background: radial-gradient(ellipse at center, rgba(26,26,26,.15), transparent 65%);
+    }
+    .screen-grid { display: grid; grid-template-columns: 1fr 1fr; min-height: 100%; }
+    .signal-card { padding: 18px; border-left: 1px solid var(--line); position: relative; }
+    .signal-card h3 { margin: 0 0 8px; font-size: 16px; font-weight: 800; letter-spacing: -.025em; }
+    .signal-card p { margin: 0; color: var(--ink-muted); font-size: 13px; line-height: 1.55; }
+    .mini-ticket {
+      margin-top: 16px;
+      background: var(--ink);
+      color: var(--white);
+      padding: 14px;
+      border-radius: 12px;
+      font-size: 12px;
+      position: relative;
+    }
+    .mini-ticket .tag { display: inline-flex; padding: 4px 7px; background: var(--orange); color: var(--ink); font: 800 10px var(--mono); margin-bottom: 10px; }
+    .pixel-face {
+      height: 132px;
+      margin-top: 14px;
+      background:
+        radial-gradient(circle at 50% 34%, rgba(26,26,26,.78) 0 7px, transparent 8px),
+        radial-gradient(circle at 38% 46%, rgba(26,26,26,.72) 0 4px, transparent 5px),
+        radial-gradient(circle at 62% 46%, rgba(26,26,26,.72) 0 4px, transparent 5px),
+        radial-gradient(ellipse at 50% 68%, rgba(26,26,26,.62) 0 31px, transparent 32px),
+        radial-gradient(rgba(26,26,26,.72) .9px, transparent .9px),
+        #dedbd5;
+      background-size: auto, auto, auto, auto, 8px 8px, auto;
+      filter: contrast(1.18) grayscale(1);
+    }
+    .orange-bar { display: flex; align-items: center; justify-content: space-between; margin: 0 18px 18px; background: var(--orange); color: var(--ink); min-height: 54px; padding: 0 19px; font: 800 12px var(--mono); letter-spacing: .08em; border-radius: 0 0 13px 13px; position: relative; z-index: 2; }
+    .light-stack { display: grid; grid-template-columns: .78fr 1fr; gap: 16px; }
+    .note-card, .solution-tile {
+      background: rgba(247,245,242,.82);
+      border: 1px solid var(--line-strong);
+      border-radius: 18px;
+      padding: 20px;
+      min-height: 150px;
+      position: relative;
+      overflow: hidden;
+    }
+    .note-card::before, .solution-tile::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: linear-gradient(90deg, transparent calc(50% - 1px), rgba(26,26,26,.065) calc(50% - 1px) 50%, transparent 50%);
+      pointer-events: none;
+    }
+    .note-card h3, .solution-tile h3 { margin: 0; font-size: 18px; line-height: 1.2; letter-spacing: -.03em; }
+    .note-card p, .solution-tile p { margin: 12px 0 0; color: var(--ink-muted); font-size: 13px; line-height: 1.6; }
+    .solution-tile { background: var(--ink); color: var(--white); border-color: rgba(255,255,255,.12); }
+    .solution-tile p { color: rgba(255,253,249,.65); }
+
+    .marquee {
+      border-block: 1px solid var(--line-strong);
+      overflow: hidden;
+      background: var(--white);
+      color: var(--ink);
+    }
+    .marquee-track {
+      display: flex;
+      width: max-content;
+      animation: marquee 28s linear infinite;
+    }
+    .marquee span { padding: 17px 26px; white-space: nowrap; font: 700 12px var(--mono); letter-spacing: .18em; text-transform: uppercase; border-left: 1px solid var(--line); }
+    @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(50%); } }
+
+    section { padding: 96px 0; position: relative; }
+    .section-head {
+      display: grid;
+      grid-template-columns: minmax(0, .9fr) minmax(280px, .62fr);
+      gap: 34px;
+      align-items: end;
+      margin-bottom: 34px;
+    }
+    .section-head h2 {
+      margin: 13px 0 0;
+      font-size: clamp(38px, 6vw, 76px);
+      line-height: .92;
+      letter-spacing: -.06em;
+      font-weight: 800;
+      text-wrap: balance;
+    }
+    .section-head p { margin: 0; color: var(--ink-muted); font-size: 18px; line-height: 1.7; }
+    .divider { height: 1px; background: var(--line-strong); margin: 0 0 34px; }
+
+    .evidence-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border: 1px solid var(--line-strong);
+      background: rgba(255,253,249,.44);
+    }
+    .evidence-card {
+      min-height: 236px;
+      padding: 22px;
+      border-left: 1px solid var(--line-strong);
+      position: relative;
+      overflow: hidden;
+    }
+    .evidence-card:last-child { border-left: 0; }
+    .evidence-card.dark { background: var(--ink); color: var(--white); }
+    .evidence-card .k { font: 800 clamp(36px, 5vw, 68px)/.9 var(--mono); letter-spacing: -.08em; margin: 22px 0 16px; display: block; }
+    .evidence-card h3 { margin: 0; font-size: 21px; letter-spacing: -.035em; line-height: 1.2; }
+    .evidence-card p { margin: 10px 0 0; color: var(--ink-muted); font-size: 14px; line-height: 1.6; }
+    .evidence-card.dark p { color: rgba(255,253,249,.64); }
+    .micro-line { position: absolute; inset-inline: 22px; bottom: 20px; height: 7px; display: grid; grid-template-columns: 1fr 2fr .7fr; gap: 5px; }
+    .micro-line i { background: var(--orange); opacity: .72; }
+
+    .case-composition {
+      display: grid;
+      grid-template-columns: .78fr 1.22fr;
+      gap: 22px;
+      align-items: start;
+    }
+    .customer-card {
+      background: #dedbd5;
+      border: 1px solid var(--line-strong);
+      border-radius: 20px 20px 6px 6px;
+      padding: 20px;
+      min-height: 590px;
+      position: sticky;
+      top: 104px;
+      overflow: hidden;
+    }
+    .customer-card h3 { margin: 0; font-size: clamp(28px, 4vw, 44px); letter-spacing: -.06em; line-height: .94; }
+    .customer-card .role { color: var(--ink-muted); margin-top: 8px; font-size: 13px; }
+    .halftone-portrait {
+      height: 250px;
+      margin: 22px 0;
+      background:
+        radial-gradient(circle at 49% 32%, rgba(26,26,26,.82) 0 18px, transparent 19px),
+        radial-gradient(ellipse at 50% 60%, rgba(26,26,26,.73) 0 74px, transparent 75px),
+        radial-gradient(rgba(26,26,26,.82) 1.2px, transparent 1.2px),
+        #f4f2ef;
+      background-size: auto, auto, 9px 9px, auto;
+      filter: contrast(1.23) grayscale(1);
+      border: 1px solid rgba(26,26,26,.12);
+    }
+    .quote { font-size: 18px; line-height: 1.7; margin: 0; }
+    .pager { display: flex; gap: 0; position: absolute; left: 20px; bottom: 20px; direction: ltr; }
+    .pager button { width: 46px; height: 44px; border: 1px solid var(--line-strong); background: var(--white); font: 800 18px var(--mono); cursor: default; }
+    .pager button:last-child { background: var(--ink); color: var(--white); }
+
+    .timeline-panel {
+      background: var(--white);
+      border: 1px solid var(--line-strong);
+      min-height: 590px;
+      display: grid;
+      grid-template-columns: 1fr;
+    }
+    .timeline-row {
+      display: grid;
+      grid-template-columns: 96px 1fr;
+      gap: 18px;
+      padding: 22px;
+      border-bottom: 1px solid var(--line-strong);
+      align-items: start;
+    }
+    .timeline-row:last-child { border-bottom: 0; }
+    .timeline-row .no { font: 800 27px/1 var(--mono); color: var(--orange); letter-spacing: -.05em; direction: ltr; }
+    .timeline-row h3 { margin: 0 0 8px; font-size: 22px; line-height: 1.2; letter-spacing: -.035em; }
+    .timeline-row p { margin: 0; color: var(--ink-muted); line-height: 1.65; }
+    .timeline-row.alert { background: rgba(240, 90, 24, .06); }
+    .timeline-row.good { background: rgba(22,120,95,.055); }
+
+    .solutions-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+      align-items: start;
+    }
+    .solutions-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border: 1px solid var(--line-strong);
+      background: var(--white);
+    }
+    .solution-cell {
+      min-height: 210px;
+      padding: 22px;
+      border-left: 1px solid var(--line-strong);
+      border-bottom: 1px solid var(--line-strong);
+      position: relative;
+      overflow: hidden;
+    }
+    .solution-cell:nth-child(2n) { border-left: 0; }
+    .solution-cell:nth-last-child(-n+2) { border-bottom: 0; }
+    .line-icon { width: 54px; height: 54px; margin-bottom: 24px; color: var(--orange); }
+    .solution-cell h3 { margin: 0 0 10px; font-size: 22px; letter-spacing: -.04em; }
+    .solution-cell p { margin: 0; color: var(--ink-muted); line-height: 1.65; font-size: 14px; }
+    .operating-card {
+      background: var(--ink);
+      color: var(--white);
+      border-radius: 22px;
+      padding: 24px;
+      min-height: 468px;
+      position: sticky;
+      top: 104px;
+      overflow: hidden;
+    }
+    .operating-card::after {
+      content: "";
+      position: absolute;
+      inset: auto -30% -20% -30%;
+      height: 230px;
+      background: radial-gradient(ellipse, rgba(240,90,24,.32), transparent 65%);
+    }
+    .ops-map { position: relative; z-index: 1; display: grid; gap: 12px; margin-top: 24px; }
+    .ops-node { display: grid; grid-template-columns: 42px 1fr auto; gap: 12px; align-items: center; padding: 14px; border: 1px solid rgba(255,255,255,.12); background: rgba(255,255,255,.045); border-radius: 14px; }
+    .ops-node .dot { width: 38px; height: 38px; display: grid; place-items: center; background: var(--orange); color: var(--ink); border-radius: 50%; font: 800 13px var(--mono); }
+    .ops-node h4 { margin: 0; font-size: 15px; }
+    .ops-node p { margin: 3px 0 0; color: rgba(255,253,249,.62); font-size: 12px; }
+    .ops-node .state { font: 800 10px var(--mono); color: var(--orange); }
+
+    .compare-board {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      border: 1px solid var(--line-strong);
+      background: var(--white);
+    }
+    .compare-col { padding: 26px; border-left: 1px solid var(--line-strong); }
+    .compare-col:last-child { border-left: 0; background: var(--ink); color: var(--white); }
+    .compare-col h3 { margin: 0 0 18px; font-size: 34px; line-height: .98; letter-spacing: -.055em; }
+    .rows { display: grid; border-top: 1px solid currentColor; border-color: rgba(26,26,26,.13); }
+    .compare-col:last-child .rows { border-color: rgba(255,255,255,.13); }
+    .row { display: grid; grid-template-columns: 1fr auto; gap: 12px; padding: 15px 0; border-bottom: 1px solid rgba(26,26,26,.12); align-items: center; }
+    .compare-col:last-child .row { border-color: rgba(255,255,255,.13); }
+    .row span:first-child { color: var(--ink-muted); }
+    .compare-col:last-child .row span:first-child { color: rgba(255,253,249,.58); }
+    .row strong { font: 800 14px var(--mono); direction: ltr; color: var(--orange); }
+
+    .phase-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border: 1px solid var(--line-strong);
+      background: rgba(255,253,249,.42);
+    }
+    .phase {
+      min-height: 360px;
+      border-left: 1px solid var(--line-strong);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .phase:last-child { border-left: 0; }
+    .phase .num { font: 800 52px/.9 var(--mono); letter-spacing: -.07em; color: var(--orange); direction: ltr; }
+    .phase h3 { margin: 20px 0 10px; font-size: 28px; line-height: 1; letter-spacing: -.05em; }
+    .phase p { color: var(--ink-muted); line-height: 1.65; margin: 0; }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
+    .chip { border: 1px solid var(--line-strong); background: var(--white); padding: 8px 10px; border-radius: 999px; font-size: 12px; color: var(--ink-muted); }
+
+    .credibility {
+      background: var(--ink);
+      color: var(--white);
+      padding: 0;
+      overflow: hidden;
+    }
+    .cred-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 540px;
+    }
+    .cred-copy { padding: 64px 0 64px 36px; align-self: center; }
+    .cred-copy h2 { margin: 10px 0 20px; font-size: clamp(42px, 6vw, 78px); line-height: .9; letter-spacing: -.06em; }
+    .cred-copy p { color: rgba(255,253,249,.65); font-size: 18px; line-height: 1.75; max-width: 560px; }
+    .cred-visual {
+      border-right: 1px solid rgba(255,255,255,.12);
+      position: relative;
+      min-height: 540px;
+      background:
+        linear-gradient(90deg, transparent calc(33.33% - 1px), rgba(255,255,255,.08) calc(33.33% - 1px) 33.33%, transparent 33.33% calc(66.66% - 1px), rgba(255,255,255,.08) calc(66.66% - 1px) 66.66%, transparent 66.66%),
+        radial-gradient(rgba(255,255,255,.3) .8px, transparent .8px);
+      background-size: auto, 10px 10px;
+    }
+    .floating-report {
+      position: absolute;
+      width: min(390px, 72%);
+      background: var(--paper);
+      color: var(--ink);
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,.14);
+      box-shadow: 0 34px 70px rgba(0,0,0,.32);
+      padding: 20px;
+    }
+    .floating-report.one { right: 9%; top: 12%; transform: rotate(1.2deg); }
+    .floating-report.two { left: 8%; bottom: 13%; transform: rotate(-2deg); }
+    .floating-report h3 { margin: 0 0 14px; font-size: 24px; letter-spacing: -.045em; }
+    .mini-bars { display: grid; gap: 8px; }
+    .mini-bars i { display: block; height: 10px; background: var(--ink); opacity: .88; }
+    .mini-bars i:nth-child(2) { width: 72%; background: var(--orange); opacity: 1; }
+    .mini-bars i:nth-child(3) { width: 53%; }
+    .mini-bars i:nth-child(4) { width: 86%; background: #a7a3a0; }
+
+    .cta {
+      padding: 104px 0;
+      text-align: center;
+    }
+    .cta-box {
+      border: 1px solid var(--line-strong);
+      background:
+        radial-gradient(circle at 50% 0, rgba(240,90,24,.14), transparent 42%),
+        var(--white);
+      padding: clamp(36px, 8vw, 82px) 22px;
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-box::before, .cta-box::after { content: ""; position: absolute; top: 0; bottom: 0; width: 1px; background: var(--line-strong); }
+    .cta-box::before { right: 25%; } .cta-box::after { left: 25%; }
+    .cta h2 { margin: 10px auto 22px; font-size: clamp(44px, 8vw, 96px); line-height: .88; letter-spacing: -.07em; max-width: 930px; }
+    .cta p { margin: 0 auto 34px; color: var(--ink-muted); font-size: 19px; line-height: 1.75; max-width: 720px; }
+    .button-row { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+    .btn { display: inline-flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 20px; border-radius: 999px; border: 1px solid var(--ink); font-weight: 800; transition: .25s ease; }
+    .btn.primary { background: var(--ink); color: var(--white); }
+    .btn.orange { background: var(--orange); border-color: var(--orange); color: var(--ink); }
+    .btn:hover { transform: translateY(-2px); }
+
+    footer {
+      border-top: 1px solid var(--line-strong);
+      padding: 28px 0;
+      color: var(--ink-muted);
+    }
+    .footer-row { display: flex; justify-content: space-between; gap: 18px; align-items: center; flex-wrap: wrap; font-size: 13px; }
+
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity .75s cubic-bezier(.2,.8,.2,1), transform .75s cubic-bezier(.2,.8,.2,1); }
+    .reveal.in { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 980px) {
+      .nav-shell { grid-template-columns: 1fr auto; border-radius: 22px; }
+      .nav-links { display: none; }
+      .hero-grid, .section-head, .case-composition, .solutions-layout, .cred-grid { grid-template-columns: 1fr; }
+      .hero-copy, .hero-board { min-height: auto; }
+      .customer-card, .operating-card { position: relative; top: auto; }
+      .evidence-grid { grid-template-columns: 1fr 1fr; }
+      .phase-strip { grid-template-columns: 1fr; }
+      .phase { border-left: 0; border-bottom: 1px solid var(--line-strong); min-height: 280px; }
+      .phase:last-child { border-bottom: 0; }
+      .cred-copy { padding: 56px 0; }
+      .cred-visual { border-right: 0; border-top: 1px solid rgba(255,255,255,.12); }
+    }
+
+    @media (max-width: 680px) {
+      .container { width: min(calc(100vw - 24px), var(--max)); }
+      .topbar { top: 10px; margin-top: 10px; }
+      .brand strong { font-size: 11px; }
+      .nav-cta { padding-inline: 12px; }
+      .hero { padding-top: 56px; }
+      h1 { font-size: clamp(44px, 15vw, 74px); }
+      .hero-bottom, .screen-grid, .evidence-grid, .solutions-list, .compare-board { grid-template-columns: 1fr; }
+      .hero-bottom .metric, .signal-card, .evidence-card, .solution-cell, .compare-col { border-left: 0; border-bottom: 1px solid var(--line-strong); }
+      .hero-bottom .metric:last-child, .evidence-card:last-child, .solution-cell:last-child, .compare-col:last-child { border-bottom: 0; }
+      .timeline-row { grid-template-columns: 58px 1fr; padding: 18px 14px; }
+      .timeline-row .no { font-size: 21px; }
+      .section-head h2, .cta h2 { letter-spacing: -.05em; }
+      .light-stack { grid-template-columns: 1fr; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+      .reveal { opacity: 1; transform: none; }
+    }
+  </style>
 </head>
 <body>
-    <div class="scroll-progress" id="scrollProgress"></div>
-    <div class="bg-mesh"></div>
+  <div class="progress" id="progress"></div>
 
-    <!-- Navigation -->
-    <nav id="navbar">
-        <div class="nav-logo">Respark OS</div>
-        <ul class="nav-links">
-            <li><a href="#problems">التحليل</a></li>
-            <li><a href="#case">الحالة</a></li>
-            <li><a href="#solution">الحل</a></li>
-            <li><a href="#compare">المقارنة</a></li>
-            <li><a href="#phases">المراحل</a></li>
-            <li><a href="#cta">تواصل</a></li>
-        </ul>
-    </nav>
+  <header class="topbar">
+    <div class="nav-shell">
+      <a class="brand" href="#top" aria-label="Respark OS">
+        <span class="mark">R</span>
+        <strong>RESPARK OS</strong>
+      </a>
+      <nav class="nav-links" aria-label="التنقل داخل العرض">
+        <a href="#diagnosis">التشخيص</a>
+        <a href="#case">الحالة</a>
+        <a href="#system">النظام</a>
+        <a href="#model">النموذج</a>
+        <a href="#plan">الخطة</a>
+      </nav>
+      <a class="nav-cta" href="#cta">ابدأ التجربة</a>
+    </div>
+  </header>
 
-    <!-- Hero Section -->
+  <main id="top">
     <section class="hero">
-        <div class="floating-elements">
-            <div class="float-item"></div>
-            <div class="float-item"></div>
-            <div class="float-item"></div>
-            <div class="float-item"></div>
+      <div class="container hero-grid">
+        <div class="hero-copy reveal">
+          <div>
+            <div class="eyebrow caps">Operations-first proposal · BusinessChat audit</div>
+            <h1>نحو خدمة عملاء <span class="cut">لا تنسى</span> أي عميل.</h1>
+            <p class="hero-lead">عرض تنفيذي لشركة شداد: تحويل BusinessChat من صندوق محادثات مزدحم إلى نظام تشغيل يستقبل، يفهم، يرد، يفتح تذكرة، يصعّد، ويتابع — قبل أن يضطر العميل لكتابة: «ما وصلني رد».</p>
+          </div>
+          <div class="hero-bottom" aria-label="مؤشرات مختصرة من التحليل">
+            <div class="metric"><span class="num counter" data-count="255">255</span><span class="label">محادثة نشطة تقريباً وقت القراءة</span></div>
+            <div class="metric"><span class="num counter" data-count="93">93</span><span class="label">رسالة خاملة تحتاج فرزاً ومتابعة</span></div>
+            <div class="metric"><span class="num counter" data-count="17">17</span><span class="label">محادثة غير معيّنة لفريق واضح</span></div>
+          </div>
         </div>
-        <div class="hero-content">
-            <div class="hero-badge">عرض حصري — شداد</div>
-            <h1>
-                <span class="line1">ودّع انتظار العملاء</span>
-                <span class="line2">مرحباً بـ Respark OS</span>
-            </h1>
-            <p>
-                نظام ذكي يُحوّل 80% من محادثات العملاء المهملة إلى ردود فورية — 
-                ويُحرّر فريقك ليُركّز على ما يُحقّق ولاء العملاء حقاً.
-            </p>
-            <div class="hero-stats">
-                <div class="stat-card">
-                    <div class="stat-number danger" data-count="255">0</div>
-                    <div class="stat-label">محادثة مفتوحة</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number warning" data-count="8">0</div>
-                    <div class="stat-label">أيام انتظار</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number accent" data-count="30">0</div>
-                    <div class="stat-label">ثانية للرد</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number success" data-count="65">0</div>
-                    <div class="stat-label">% توفير</div>
-                </div>
+
+        <div class="hero-board reveal" style="transition-delay:.08s">
+          <article class="black-panel">
+            <div class="panel-top">
+              <span class="caps">Live service board</span>
+              <span class="burger" aria-hidden="true"><i></i><i></i><i></i></span>
             </div>
+            <div class="panel-title">
+              <h2>Shadad<br>Care OS</h2>
+              <p>لوحة تشغيلية تعرض الخطر قبل أن يتحول إلى شكوى: انتظار طويل، وعد بلا متابعة، أو محادثة بلا مالك.</p>
+            </div>
+            <div class="queue-screen">
+              <div class="screen-grid">
+                <div class="signal-card">
+                  <span class="caps orange">unanswered signal</span>
+                  <h3>عميل ينتظر منذ أيام</h3>
+                  <p>النظام يلتقط تكرار المتابعة ويحوّلها فوراً إلى مسار تصعيد.</p>
+                  <div class="mini-ticket"><span class="tag">SLA BREACH</span><br>فتح تذكرة + ملخص + مالك واضح</div>
+                </div>
+                <div class="signal-card">
+                  <span class="caps orange">case card</span>
+                  <div class="pixel-face" aria-hidden="true"></div>
+                  <h3>لا توجد محادثة «منسية»</h3>
+                  <p>كل عميل له حالة، سياق، وموعد متابعة.</p>
+                </div>
+              </div>
+            </div>
+            <div class="orange-bar"><span>EXPLORE CUSTOMER OPERATIONS</span><span>←</span></div>
+          </article>
+          <div class="light-stack">
+            <div class="note-card">
+              <span class="caps orange">verified note</span>
+              <h3>تصحيح الاسم</h3>
+              <p>الاسم الظاهر في BusinessChat مُثبت بصيغة «جبريل»، وسيظهر كذلك في العرض.</p>
+            </div>
+            <div class="solution-tile">
+              <span class="caps orange">primary claim</span>
+              <h3>أتمتة 80% لا تعني إلغاء الحكم البشري.</h3>
+              <p>تعني أن الموظف يتدخل فقط عندما تكون الحالة استثنائية أو عالية القيمة.</p>
+            </div>
+          </div>
         </div>
+      </div>
     </section>
 
-    <!-- Problems Section -->
-    <section class="problem-section" id="problems">
-        <div class="section-container">
-            <div class="fade-in">
-                <div class="section-label">التحليل الميداني</div>
-                <h2 class="section-title">ما اكتشفناه<br>في منصتكم</h2>
-                <p class="section-subtitle">أرقام حقيقية من محادثات BusinessChat — الواقع الذي يجب تغييره</p>
-            </div>
+    <div class="marquee" aria-label="شريط سياقي">
+      <div class="marquee-track">
+        <span>audit your workflow</span><span>classify every message</span><span>route by intent</span><span>open tickets automatically</span><span>escalate before breach</span><span>report inner operations</span>
+        <span>audit your workflow</span><span>classify every message</span><span>route by intent</span><span>open tickets automatically</span><span>escalate before breach</span><span>report inner operations</span>
+      </div>
+    </div>
 
-            <div class="problem-grid">
-                <div class="problem-card critical fade-in">
-                    <div class="problem-metric" data-count="17">0</div>
-                    <h3>محادثات بدون موظف</h3>
-                    <p>17 عميل ينتظرون ولا أحد مسؤول عنهم — ضائعون بين الفرق</p>
-                </div>
-                <div class="problem-card critical fade-in">
-                    <div class="problem-metric" data-count="90">0</div>
-                    <h3>محادثة/موظف</h3>
-                    <p>محمد جبري يحمل 90 محادلة — مستحيل يُجيب عليها كلها</p>
-                </div>
-                <div class="problem-card warning fade-in">
-                    <div class="problem-metric" data-count="400">0</div>
-                    <h3>كلمة في رسالة البوت</h3>
-                    <p>رسالة الاستبدال أطول من مقال — يقرأها العميل أم يهرب؟</p>
-                </div>
-                <div class="problem-card critical fade-in">
-                    <div class="problem-metric" data-count="0">0</div>
-                    <h3>تذاكي لـ Omar</h3>
-                    <p>عميل يشكو 8 أيام — لم يُفتح له تذكرة ولا مهمة متابعة</p>
-                </div>
-                <div class="problem-card warning fade-in">
-                    <div class="problem-metric" data-count="93">0</div>
-                    <h3>محادلة "خاملة" مفتوحة</h3>
-                    <p>الرسائل الخاملة تحمل اسماً خاطئاً — كل واحدة منها تحتاج رداً</p>
-                </div>
-                <div class="problem-card critical fade-in">
-                    <div class="problem-metric" data-count="4">0</div>
-                    <h3>أيام بدون رد</h3>
-                    <p>"ماحد برد علينا يعني ؟؟؟" — Mahdi Eid ينتظر</p>
-                </div>
-            </div>
+    <section id="diagnosis">
+      <div class="container">
+        <div class="section-head reveal">
+          <div>
+            <span class="caps orange">01 · Field diagnosis</span>
+            <h2>المشكلة ليست في WhatsApp. المشكلة في التشغيل.</h2>
+          </div>
+          <p>BusinessChat يملك مؤشرات تجارية جيدة، لكن خدمة العملاء تتأثر بثلاث فجوات تشغيلية: محادثات بلا مالك، وعود بلا تذكرة، ورسائل بوت طويلة لا تحسم سؤال العميل.</p>
         </div>
+        <div class="divider"></div>
+        <div class="evidence-grid reveal">
+          <article class="evidence-card dark">
+            <span class="caps orange">active load</span>
+            <span class="k counter" data-count="255">255</span>
+            <h3>حِمل محادثات نشط</h3>
+            <p>عدد كبير يكشف أن الحل ليس إضافة موظف جديد فقط، بل ضبط آلية التشغيل.</p>
+            <span class="micro-line"><i></i><i></i><i></i></span>
+          </article>
+          <article class="evidence-card">
+            <span class="caps orange">idle queue</span>
+            <span class="k counter" data-count="93">93</span>
+            <h3>رسائل خاملة</h3>
+            <p>الخمول هنا لا يعني انتهاء المشكلة؛ أحياناً هو المكان الذي تختبئ فيه الشكاوى.</p>
+            <span class="micro-line"><i></i><i></i><i></i></span>
+          </article>
+          <article class="evidence-card">
+            <span class="caps orange">unassigned</span>
+            <span class="k counter" data-count="17">17</span>
+            <h3>بلا تعيين</h3>
+            <p>أي محادثة بلا مالك هي وعد ضمني للعميل بأن لا أحد مسؤول.</p>
+            <span class="micro-line"><i></i><i></i><i></i></span>
+          </article>
+          <article class="evidence-card">
+            <span class="caps orange">name check</span>
+            <span class="k" style="font-size:42px;letter-spacing:-.06em">جبريل</span>
+            <h3>تصحيح مهم</h3>
+            <p>تم اعتماد اسم «جبريل» في مواضع الموظفين بناءً على القراءة الحية من BusinessChat.</p>
+            <span class="micro-line"><i></i><i></i><i></i></span>
+          </article>
+        </div>
+      </div>
     </section>
 
-    <!-- Case Study Section -->
-    <section class="case-section" id="case">
-        <div class="section-container">
-            <div class="fade-in">
-                <div class="section-label">دراسة حالة</div>
-                <h2 class="section-title">Omar — عميل lost 8 أيام</h2>
-                <p class="section-subtitle">لم يكن هذا العميل بحاجة لمعجزة — كان بحاجة لنظام</p>
-            </div>
-
-            <div class="case-container">
-                <div class="case-timeline fade-in">
-                    <span class="case-label fail">❌ الوضع الحالي</span>
-                    <div class="timeline-item">
-                        <div class="timeline-date">7 سبتمبر — 7:58 م</div>
-                        <div class="timeline-content">🤖 البوت يُرسل رسالة 400+ كلمة عن سياسة الاستبدال</div>
-                        <div class="timeline-note">طويلة، مُشتّتة، لا تحتوي على رابط مباشر</div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-date">7 سبتمبر — 7:59 م</div>
-                        <div class="timeline-content">👤 عمر: "طيب أنا عندي قطعه وحده بس" + "و كيف ارفع الطلب؟"</div>
-                        <div class="timeline-note">سؤالان بسيطان يحتاجان إجابة فورية</div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-date">7 سبتمبر — 8:01 م</div>
-                        <div class="timeline-content">👨‍💼 الموظف: "بتاكد من الاداره وبرد لك" — مرتين</div>
-                        <div class="timeline-note">وعد لم يتحقق. لا متابعة. لا تذكرة.</div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-date">9 سبتمبر</div>
-                        <div class="timeline-content">🤖 النظام يُحوّل المحادلة لـ "الرسائل الخاملة"</div>
-                        <div class="timeline-note">بدل الحل — أرشفوها</div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-date">11-14 سبتمبر</div>
-                        <div class="timeline-content">👤 عمر: 4 رسائل "سلام عليكم" + "ماوصلني رد"</div>
-                        <div class="timeline-note">صرخة استغاثة واضحة — لا أحد يسمع</div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-date">15 سبتمبر</div>
-                        <div class="timeline-content">👤 عمر: "؟؟"</div>
-                        <div class="timeline-note">استسلم. لكن العميل لم ينسَ.</div>
-                    </div>
-                </div>
-
-                <div class="case-timeline fade-in">
-                    <span class="case-label success">✅ مع Respark OS</span>
-                    <div class="timeline-item success">
-                        <div class="timeline-date">7 سبتمبر — 7:59 م</div>
-                        <div class="timeline-content">🧠 النظام يفهم: "استبدال مقاس" + "قطعة واحدة"</div>
-                        <div class="timeline-note">تصنيف فوري: استبدال → فردي → مباشر</div>
-                    </div>
-                    <div class="timeline-item success">
-                        <div class="timeline-date">7 سبتمبر — 7:59 م</div>
-                        <div class="timeline-content">💬 الرد الفوري (5 ثوانٍ): "تمام! تعبئ النموذج خلال 30 يوم، أول استبدال مجاني. [رابط]"</div>
-                        <div class="timeline-note">قصير، عملي، فيه الحل</div>
-                    </div>
-                    <div class="timeline-item success">
-                        <div class="timeline-date">7 سبتمبر — 8:05 م</div>
-                        <div class="timeline-content">🎫 تذكرة أُنشئت تلقائياً + إشعار للموظف</div>
-                        <div class="timeline-note">النظام يتابع تلقائياً</div>
-                    </div>
-                    <div class="timeline-item success">
-                        <div class="timeline-date">8 سبتمبر</div>
-                        <div class="timeline-content">🤖 متابعة آلية: "هل استلمت الطلب الجديد؟"</div>
-                        <div class="timeline-note">العميل يشعر بالاهتمام — قبل أن يسأل</div>
-                    </div>
-                </div>
-            </div>
+    <section id="case">
+      <div class="container">
+        <div class="section-head reveal">
+          <div>
+            <span class="caps orange">02 · Case study</span>
+            <h2>حالة عمر: كيف تتحول رسالة بسيطة إلى فقدان ثقة.</h2>
+          </div>
+          <p>هذه ليست قصة فردية؛ إنها مثال تشغيل واضح: سؤال مباشر عن الاستبدال، ثم وعد بالرجوع، ثم أيام متابعة بلا إجابة حاسمة.</p>
         </div>
+        <div class="case-composition">
+          <aside class="customer-card reveal">
+            <span class="caps orange">customer signal</span>
+            <h3>عمر</h3>
+            <div class="role">سؤال استبدال بسيط · تحوّل إلى انتظار طويل</div>
+            <div class="halftone-portrait" aria-hidden="true"></div>
+            <p class="quote">«ما وصلني رد إلى الآن» ليست مجرد رسالة؛ هي إنذار بأن النظام التشغيلي لم يمسك الخيط في الوقت المناسب.</p>
+            <div class="pager" aria-hidden="true"><button>←</button><button>→</button></div>
+          </aside>
+          <div class="timeline-panel reveal" style="transition-delay:.1s">
+            <div class="timeline-row alert">
+              <div class="no">.01</div>
+              <div><h3>رسالة بوت طويلة</h3><p>العميل يحتاج خطوة عملية مختصرة، لا نصاً مطولاً يصعب اتخاذ إجراء منه.</p></div>
+            </div>
+            <div class="timeline-row alert">
+              <div class="no">.02</div>
+              <div><h3>وعد بالرجوع دون تذكرة</h3><p>«سأتأكد من الإدارة وأرد لك» يجب أن تنشئ متابعة تلقائية بمالك وموعد نهائي.</p></div>
+            </div>
+            <div class="timeline-row alert">
+              <div class="no">.03</div>
+              <div><h3>تحويل إلى الرسائل الخاملة</h3><p>التصنيف الخاطئ يخفي المشكلة بدلاً من حلها، خصوصاً حين يتابع العميل أكثر من مرة.</p></div>
+            </div>
+            <div class="timeline-row good">
+              <div class="no">.04</div>
+              <div><h3>مع Respark OS</h3><p>فهم النية، إنشاء تذكرة، رد مختصر، تصعيد عند تجاوز SLA، ثم متابعة تلقائية حتى الإغلاق.</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
 
-    <!-- Solution Section - Bento Grid -->
-    <section class="solution-section" id="solution">
-        <div class="section-container">
-            <div class="fade-in">
-                <div class="section-label">Respark OS</div>
-                <h2 class="section-title">الحل — نظام ذكي<br>متكامل</h2>
-                <p class="section-subtitle">لا نستبدل البشر — نستبدل العبء. إليكم كيف</p>
-            </div>
-
-            <div class="bento-grid">
-                <div class="bento-card large fade-in">
-                    <div class="bento-icon">🤖</div>
-                    <h3>بوت محادثة ذكي</h3>
-                    <p>يفهم نية العميل ويرد فوراً بحل عملي — لا 400 كلمة إنشائية</p>
-                    <ul class="bento-features">
-                        <li>تصنيف تلقائي: استفسار / شكوى / استبدال / تتبع</li>
-                        <li>رد فوري خلال 5 ثوانٍ</li>
-                        <li>أزرار تفاعلية بدل النصوص الطويلة</li>
-                        <li>تخصيص حسب حالة الطلب والعميل</li>
-                    </ul>
-                </div>
-                <div class="bento-card fade-in">
-                    <div class="bento-icon">🎫</div>
-                    <h3>نظام تذاكي آلي</h3>
-                    <p>كل محادلة تتحول لتذكرة — لا وعد يُنسى</p>
-                </div>
-                <div class="bento-card fade-in">
-                    <div class="bento-icon">⚖️</div>
-                    <h3>توزيع حمل ذكي</h3>
-                    <p>محادثات موزعة بعدالة — لا موظف ينهار</p>
-                </div>
-                <div class="bento-card fade-in">
-                    <div class="bento-icon">📊</div>
-                    <h3>لوحة تحليلات</h3>
-                    <p>أرقام حية: من يحتاج دعم؟ أين الخلل؟</p>
-                </div>
-                <div class="bento-card fade-in">
-                    <div class="bento-icon">🔄</div>
-                    <h3>تحسين مستمر</h3>
-                    <p>النظام يتعلم من تدخلات الموظفين</p>
-                </div>
-                <div class="bento-card fade-in">
-                    <div class="bento-icon">🔗</div>
-                    <h3>تكامل سلس</h3>
-                    <p>يعمل مع BusinessChat — لا حاجة لتغيير أدواتكم</p>
-                </div>
-            </div>
+    <section id="system">
+      <div class="container">
+        <div class="section-head reveal">
+          <div>
+            <span class="caps orange">03 · System architecture</span>
+            <h2>نظام تشغيل، لا بوت ردود فقط.</h2>
+          </div>
+          <p>Respark OS يجلس فوق BusinessChat كطبقة تشغيل ذكية: يقرأ الرسالة، يقرر المسار، يفتح التذكرة، ويقيس الالتزام.</p>
         </div>
+        <div class="solutions-layout">
+          <div class="solutions-list reveal">
+            <article class="solution-cell">
+              <svg class="line-icon" viewBox="0 0 64 64" fill="none" aria-hidden="true"><path d="M12 18h40v24H26L14 52V42h-2V18Z" stroke="currentColor" stroke-width="3"/><path d="M21 27h22M21 34h14" stroke="currentColor" stroke-width="3"/></svg>
+              <h3>فهم نية العميل</h3>
+              <p>استبدال، تتبع، دفع، شكوى، منتج، أو استفسار عام — دون انتظار موظف يقرأ كل شيء يدوياً.</p>
+            </article>
+            <article class="solution-cell">
+              <svg class="line-icon" viewBox="0 0 64 64" fill="none" aria-hidden="true"><path d="M17 12h30v40H17z" stroke="currentColor" stroke-width="3"/><path d="M24 24h16M24 32h16M24 40h10" stroke="currentColor" stroke-width="3"/><path d="M45 18l7 7" stroke="currentColor" stroke-width="3"/></svg>
+              <h3>تذاكر تلقائية</h3>
+              <p>كل وعد، استثناء، أو شكوى تتحول إلى تذكرة لها مالك، حالة، وموعد متابعة.</p>
+            </article>
+            <article class="solution-cell">
+              <svg class="line-icon" viewBox="0 0 64 64" fill="none" aria-hidden="true"><path d="M12 47h40" stroke="currentColor" stroke-width="3"/><path d="M19 47V29M32 47V17M45 47V24" stroke="currentColor" stroke-width="3"/><path d="M18 29l14-12 13 7" stroke="currentColor" stroke-width="3"/></svg>
+              <h3>موازنة الحِمل</h3>
+              <p>توزيع المحادثات حسب الطاقة والتخصص حتى لا يتحمل موظف واحد عبئاً غير عادل.</p>
+            </article>
+            <article class="solution-cell">
+              <svg class="line-icon" viewBox="0 0 64 64" fill="none" aria-hidden="true"><path d="M16 14h32v36H16z" stroke="currentColor" stroke-width="3"/><path d="M22 24h20M22 32h20M22 40h11" stroke="currentColor" stroke-width="3"/><circle cx="47" cy="18" r="5" fill="currentColor"/></svg>
+              <h3>تقارير داخلية</h3>
+              <p>من تأخر؟ أي فريق يختنق؟ أي نوع محادثات يسبب الاحتكاك؟ تظهر الإجابة في لوحة واحدة.</p>
+            </article>
+          </div>
+
+          <aside class="operating-card reveal" style="transition-delay:.1s">
+            <span class="caps orange">inner operations</span>
+            <div class="panel-title" style="padding:18px 0 0"><h2>Workflow<br>Engine</h2><p>كل محادثة تمر عبر مسار واضح قابل للقياس والمراجعة.</p></div>
+            <div class="ops-map">
+              <div class="ops-node"><span class="dot">01</span><div><h4>Message In</h4><p>استقبال من BusinessChat</p></div><span class="state">READ</span></div>
+              <div class="ops-node"><span class="dot">02</span><div><h4>Intent + Risk</h4><p>تصنيف النية والخطر</p></div><span class="state">AI</span></div>
+              <div class="ops-node"><span class="dot">03</span><div><h4>Reply / Ticket</h4><p>رد فوري أو تذكرة</p></div><span class="state">ACT</span></div>
+              <div class="ops-node"><span class="dot">04</span><div><h4>SLA Guard</h4><p>تصعيد قبل التأخر</p></div><span class="state">SLA</span></div>
+            </div>
+          </aside>
+        </div>
+      </div>
     </section>
 
-    <!-- Architecture Section -->
-    <section class="arch-section">
-        <div class="section-container">
-            <div class="fade-in">
-                <div class="section-label">المعمارية</div>
-                <h2 class="section-title">كيف يعمل النظام؟</h2>
-                <p class="section-subtitle">الخوارزمية الذكية خلف التجربة</p>
-            </div>
-
-            <div class="arch-flow fade-in">
-                <div class="arch-node">
-                    <div class="icon">💬</div>
-                    <h4>العميل يُرسل</h4>
-                    <p>عبر WhatsApp</p>
-                </div>
-                <div class="arch-arrow">→</div>
-                <div class="arch-node highlight">
-                    <div class="icon">🧠</div>
-                    <h4>Respark OS</h4>
-                    <p>فهم + تصنيف + توزيع</p>
-                </div>
-                <div class="arch-arrow">→</div>
-                <div class="arch-node">
-                    <div class="icon">✅</div>
-                    <h4>80%: حل فوري</h4>
-                    <p>رد آلي + متابعة</p>
-                </div>
-            </div>
-
-            <div class="arch-flow fade-in">
-                <div class="arch-node">
-                    <div class="icon">⚠️</div>
-                    <h4>20%: معقد</h4>
-                    <p>تصعيد للموظف</p>
-                </div>
-                <div class="arch-arrow">→</div>
-                <div class="arch-node">
-                    <div class="icon">🎫</div>
-                    <h4>تذكرة + ملخص</h4>
-                    <p>من النظام</p>
-                </div>
-                <div class="arch-arrow">→</div>
-                <div class="arch-node">
-                    <div class="icon">👨‍💼</div>
-                    <h4>موظف متخصص</h4>
-                    <p>1-2 فقط</p>
-                </div>
-            </div>
+    <section id="model">
+      <div class="container">
+        <div class="section-head reveal">
+          <div>
+            <span class="caps orange">04 · Operating model</span>
+            <h2>استبدال العبء، لا استبدال الخبرة.</h2>
+          </div>
+          <p>نموذجنا المقترح: الأتمتة تتولى الطلبات المتكررة والمتابعة، والموظفون يتدخلون في الحالات التي تحتاج قراراً أو حساسية بشرية.</p>
         </div>
+        <div class="compare-board reveal">
+          <article class="compare-col">
+            <span class="caps orange">current operating mode</span>
+            <h3>الوضع الحالي</h3>
+            <div class="rows">
+              <div class="row"><span>فريق خدمة العملاء</span><strong>6–8</strong></div>
+              <div class="row"><span>أطول انتظار مرصود</span><strong>8 DAYS</strong></div>
+              <div class="row"><span>محادثات بلا تعيين</span><strong>17+</strong></div>
+              <div class="row"><span>متابعة الوعود</span><strong>MANUAL</strong></div>
+              <div class="row"><span>الخطر</span><strong>INVISIBLE</strong></div>
+            </div>
+          </article>
+          <article class="compare-col">
+            <span class="caps orange">with respark os</span>
+            <h3>مع Respark OS</h3>
+            <div class="rows">
+              <div class="row"><span>موظفون للحالات المعقدة</span><strong>2–3</strong></div>
+              <div class="row"><span>رد أولي للغالبية</span><strong>&lt;30 SEC</strong></div>
+              <div class="row"><span>محادثة بلا مالك</span><strong>ZERO</strong></div>
+              <div class="row"><span>متابعة الوعود</span><strong>AUTO</strong></div>
+              <div class="row"><span>الخطر</span><strong>VISIBLE</strong></div>
+            </div>
+          </article>
+        </div>
+      </div>
     </section>
 
-    <!-- Comparison Section -->
-    <section class="comparison-section" id="compare">
-        <div class="section-container">
-            <div class="fade-in">
-                <div class="section-label">المقارنة</div>
-                <h2 class="section-title">الوضع الحالي vs. مع Respark OS</h2>
-                <p class="section-subtitle">الفرق واضح — والنتيجة لا تقبل المقارنة</p>
-            </div>
-
-            <div class="comparison-grid fade-in">
-                <div class="comparison-col current">
-                    <div class="comparison-header">
-                        <h3>الوضع الحالي</h3>
-                        <span class="badge fail">⚠️ يحتاج تغيير</span>
-                    </div>
-                    <div class="comparison-row">
-                        <span class="label">عدد الموظفين</span>
-                        <span class="value danger">6-8 موظفين</span>
-                    </div>
-                    <div class="comparison-row">
-                        <span class="label">متوسط وقت الرد</span>
-                        <span class="value danger">12-48 ساعة</span>
-                    </div>
-                    <div class="comparison-row">
-                        <span class="label">المحادثات المهملة</span>
-                        <span class="value danger">17+ بدون موظف</span>
-                    </div>
-                    <div class="comparison-row">
-                        <span class="label">أطول مدة انتظار</span>
-                        <span class="value danger">8 أيام</span>
-                    </div>
-                    <div class="comparison-row">
-                        <span class="label">التكلفة الشهرية</span>
-                        <span class="value danger">25-35K ر.س</span>
-                    </div>
-                    <div class="comparison-row">
-                        <span class="label">نظام متابعة</span>
-                        <span class="value danger">غير فعّال</span>
-                    </div>
-                    <div class="comparison-row">
-                        <span class="label">رضا العملاء</span>
-                        <span class="value danger">متدني</span>
-                    </div>
-                </div>
-
-                <div class="comparison-vs">VS</div>
-
-                <div class="comparison-col proposed">
-                    <div class="comparison-header">
-                        <h3>مع Respark OS</h3>
-                        <span class="badge success">✅ مُقترح</span>
-                    </div>
-                    <div class="comparison-row">
-                        <span class="label">عدد الموظفين</span>
-                        <span class="value success">2-3 فقط</span>
-                    </div>
-                    <div class="comparison-row">
-                        <span class="label">متوسط وقت الرد</span>
-                        <span class="value success">&lt; 30 ثانية</span>
-                    </div>
-                    <div class="comparison-row">
-                        <span class="label">المحادثات المهملة</span>
-                        <span class="value success">0</span>
-                    </div>
-                    <div class="comparison-row">
-                        <span class="label">أطول مدة انتظار</span>
-                        <span class="value success">&lt; 4 ساعات</span>
-                    </div>
-                    <div class="comparison-row">
-                        <span class="label">التكلفة الشهرية</span>
-                        <span class="value success">8-12K ر.س</span>
-                    </div>
-                    <div class="comparison-row">
-                        <span class="label">نظام متابعة</span>
-                        <span class="value success">تذاكي + تصعيد</span>
-                    </div>
-                    <div class="comparison-row">
-                        <span class="label">رضا العملاء</span>
-                        <span class="value success">مرتفع</span>
-                    </div>
-                </div>
-            </div>
+    <section class="credibility">
+      <div class="container cred-grid">
+        <div class="cred-copy reveal">
+          <span class="caps orange">reporting & acceptance</span>
+          <h2>لوحة واحدة للقرار.</h2>
+          <p>بدلاً من سؤال «من المسؤول عن هذه المحادثة؟»، يرى المدير: عدد المحادثات المفتوحة، حالات SLA، أداء الفرق، أسباب الشكاوى، ونقاط التحسين في رسائل البوت.</p>
         </div>
+        <div class="cred-visual reveal" aria-hidden="true" style="transition-delay:.1s">
+          <div class="floating-report one">
+            <span class="caps orange">team load</span>
+            <h3>محمد جبريل · عزيز جبريل</h3>
+            <div class="mini-bars"><i style="width:92%"></i><i style="width:64%"></i><i style="width:48%"></i><i style="width:71%"></i></div>
+          </div>
+          <div class="floating-report two">
+            <span class="caps orange">service quality</span>
+            <h3>قبل أن يكتب العميل «؟؟»</h3>
+            <div class="mini-bars"><i style="width:42%"></i><i style="width:87%"></i><i style="width:61%"></i><i style="width:36%"></i></div>
+          </div>
+        </div>
+      </div>
     </section>
 
-    <!-- Phases Section - Horizontal Scroll -->
-    <section class="phases-section" id="phases">
-        <div class="section-container">
-            <div class="fade-in">
-                <div class="section-label">خطة التنفيذ</div>
-                <h2 class="section-title">من الفكرة إلى الواقع</h2>
-                <p class="section-subtitle">3 مراحل واضحة — نتائج مبكّرة من الأسبوع الأول ← اسحب للاستكشاف</p>
-            </div>
-
-            <div class="phases-track">
-                <div class="phase-card fade-in">
-                    <div class="phase-number">1</div>
-                    <h3>🛠 إصلاح عاجل</h3>
-                    <p>أسبوع واحد — نتائج فورية بدون انتظار</p>
-                    <div class="phase-deliverables">
-                        <span class="deliverable">إعادة صياغة رسائل البوت</span>
-                        <span class="deliverable">نظام تنبيهات &gt;24س</span>
-                        <span class="deliverable">توزيع الحمل</span>
-                        <span class="deliverable">SLA واضح</span>
-                    </div>
-                </div>
-                <div class="phase-card fade-in">
-                    <div class="phase-number">2</div>
-                    <h3>🤖 أتمتة ذكية</h3>
-                    <p>2-3 أسابيع — النظام يبدأ يتعلم</p>
-                    <div class="phase-deliverables">
-                        <span class="deliverable">بوت محادلة ذكي</span>
-                        <span class="deliverable">نظام تذاكي</span>
-                        <span class="deliverable">لوحة تحليلات</span>
-                        <span class="deliverable">تنبيهات Telegram</span>
-                    </div>
-                </div>
-                <div class="phase-card fade-in">
-                    <div class="phase-number">3</div>
-                    <h3>📈 تحسين مستمر</h3>
-                    <p>شهري — النظام يتحسن باستمرار</p>
-                    <div class="phase-deliverables">
-                        <span class="deliverable">تحليل أداء شهري</span>
-                        <span class="deliverable">تحسين البوت</span>
-                        <span class="deliverable">تقارير رضا</span>
-                        <span class="deliverable">توسع: Instagram</span>
-                    </div>
-                </div>
-            </div>
+    <section id="plan">
+      <div class="container">
+        <div class="section-head reveal">
+          <div>
+            <span class="caps orange">05 · How it works</span>
+            <h2>ثلاث مراحل تنفيذية، بلا فوضى.</h2>
+          </div>
+          <p>نبدأ بما يوقف النزيف فوراً، ثم نبني طبقة الأتمتة، ثم نثبت تقارير شهرية تحوّل خدمة العملاء إلى أصل تشغيلي قابل للقياس.</p>
         </div>
+        <div class="phase-strip reveal">
+          <article class="phase">
+            <div><span class="num">.01</span><h3>تدقيق سير العمل</h3><p>إعادة فرز الفرق، تعريف حالات الخطر، تصحيح رسائل البوت الطويلة، ووضع SLA واضح.</p></div>
+            <div class="chips"><span class="chip">SLA</span><span class="chip">Bot copy</span><span class="chip">Queue rules</span></div>
+          </article>
+          <article class="phase">
+            <div><span class="num">.02</span><h3>ربط Respark OS</h3><p>Webhook، تصنيف نية، تذاكر تلقائية، إشعارات للموظفين، ومتابعة آلية للحالات المفتوحة.</p></div>
+            <div class="chips"><span class="chip">BusinessChat</span><span class="chip">Tickets</span><span class="chip">Escalation</span></div>
+          </article>
+          <article class="phase">
+            <div><span class="num">.03</span><h3>تشغيل وقياس</h3><p>لوحة أداء، تقارير أسبوعية، تحسين مستمر للردود، وتوسيع تدريجي لقنوات إضافية عند الحاجة.</p></div>
+            <div class="chips"><span class="chip">Dashboard</span><span class="chip">QA</span><span class="chip">Growth loop</span></div>
+          </article>
+        </div>
+      </div>
     </section>
 
-    <!-- CTA Section -->
-    <section class="cta-section" id="cta">
-        <div class="section-container fade-in">
-            <h2>الخطوة التالية</h2>
-            <p>
-                اجتماع استكشافي مدته 30 دقيقة — نعرض لكم نموذجاً حياً لما يمكن أن تبدو عليه محادثاتكم بعد التحسين.
-            </p>
-            <div class="cta-buttons">
-                <a href="#" class="btn btn-primary">📅 احجز اجتماعك</a>
-                <a href="#" class="btn btn-secondary">💬 محادلة مباشرة</a>
-            </div>
+    <section class="cta" id="cta">
+      <div class="container">
+        <div class="cta-box reveal">
+          <span class="caps orange">next step</span>
+          <h2>نعرض النموذج الحي خلال اجتماع واحد.</h2>
+          <p>نقترح اجتماعاً تنفيذياً قصيراً مع شداد: نعرض تشخيص BusinessChat، نموذج المحادثة بعد التحسين، وآلية التذاكر والتصعيد التي تمنع تكرار حالة عمر.</p>
+          <div class="button-row">
+            <a class="btn primary" href="mailto:mutaz@respark.sa?subject=Respark%20OS%20x%20Shadad">طلب اجتماع</a>
+            <a class="btn orange" href="#diagnosis">استعراض التشخيص</a>
+          </div>
         </div>
+      </div>
     </section>
+  </main>
 
-    <!-- Footer -->
-    <footer>
-        <div class="footer-brand">Respark OS</div>
-        <p class="footer-text">شريك شداد الرقمي نحو تجربة عملاء استثنائية</p>
-        <p class="footer-text" style="margin-top: 0.5rem; font-size: 0.75rem; opacity: 0.5;">
-            تم إعداد هذا العرض بناءً على تحليل ميداني حقيقي — جميع البيانات مؤرخة ومُوثقة
-        </p>
-    </footer>
+  <footer>
+    <div class="container footer-row">
+      <span class="mono">RESPARK OS × SHADAD</span>
+      <span>تصميم مستوحى من لغة Oberon التشغيلية: ورق فاتح، شبكة دقيقة، كروت سوداء، Accent برتقالي، وأقسام مرقمة.</span>
+    </div>
+  </footer>
 
-    <!-- Scripts -->
-    <script>
-        // Scroll Progress
-        window.addEventListener('scroll', () => {
-            const scrolled = window.scrollY;
-            const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-            const progress = (scrolled / maxScroll) * 100;
-            document.getElementById('scrollProgress').style.width = progress + '%';
+  <script>
+    const progress = document.getElementById('progress');
+    const updateProgress = () => {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      progress.style.width = max > 0 ? `${(window.scrollY / max) * 100}%` : '0%';
+    };
+    window.addEventListener('scroll', updateProgress, { passive: true });
+    updateProgress();
 
-            // Navbar effect
-            const nav = document.getElementById('navbar');
-            if (scrolled > 50) {
-                nav.classList.add('scrolled');
-            } else {
-                nav.classList.remove('scrolled');
-            }
-        });
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: .12, rootMargin: '0px 0px -60px 0px' });
+    document.querySelectorAll('.reveal').forEach((el) => revealObserver.observe(el));
 
-        // Intersection Observer for animations
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
-            });
-        }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
-
-        document.querySelectorAll('.fade-in, .slide-in-right, .slide-in-left, .scale-in').forEach(el => {
-            observer.observe(el);
-        });
-
-        // Counter Animation
-        const counterObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const el = entry.target;
-                    const target = parseInt(el.getAttribute('data-count'));
-                    const duration = 2000;
-                    const step = target / (duration / 16);
-                    let current = 0;
-
-                    const updateCounter = () => {
-                        current += step;
-                        if (current < target) {
-                            el.textContent = Math.floor(current);
-                            requestAnimationFrame(updateCounter);
-                        } else {
-                            el.textContent = target;
-                        }
-                    };
-
-                    updateCounter();
-                    counterObserver.unobserve(el);
-                }
-            });
-        }, { threshold: 0.5 });
-
-        document.querySelectorAll('[data-count]').forEach(el => {
-            counterObserver.observe(el);
-        });
-
-        // Smooth scroll for nav links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            });
-        });
-    </script>
+    const animateCounters = () => {
+      document.querySelectorAll('.counter').forEach((el) => {
+        const target = Number(el.dataset.count || el.textContent || 0);
+        let current = 0;
+        const steps = 34;
+        const inc = target / steps;
+        const tick = () => {
+          current += inc;
+          if (current < target) {
+            el.textContent = Math.floor(current).toLocaleString('en-US');
+            requestAnimationFrame(tick);
+          } else {
+            el.textContent = target.toLocaleString('en-US');
+          }
+        };
+        tick();
+      });
+    };
+    const counterObserver = new IntersectionObserver((entries) => {
+      if (entries.some(e => e.isIntersecting)) {
+        animateCounters();
+        counterObserver.disconnect();
+      }
+    }, { threshold: .2 });
+    const firstCounter = document.querySelector('.counter');
+    if (firstCounter) counterObserver.observe(firstCounter);
+  </script>
 </body>
 </html>
